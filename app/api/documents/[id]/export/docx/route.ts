@@ -63,7 +63,10 @@ export async function GET(
     // Return file
     const filename = `${(document as any).type}_v${(document as any).version}.docx`
     
-    return new NextResponse(buffer, {
+    // Convert Buffer to Uint8Array for NextResponse
+    const uint8Array = new Uint8Array(buffer)
+    
+    return new NextResponse(uint8Array, {
       headers: {
         'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         'Content-Disposition': `attachment; filename="${filename}"`,
