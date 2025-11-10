@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { FileText, Book, FileCheck, Loader2 } from 'lucide-react'
+import { FileText, Book, FileCheck, FileSignature, Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 export function GenerateDocumentButton({ projectId }: { projectId: string }) {
@@ -89,6 +89,21 @@ export function GenerateDocumentButton({ projectId }: { projectId: string }) {
           <FileCheck className="w-4 h-4 mr-2" />
         )}
         {isLoading('Protocol') ? 'Generating...' : 'Generate Protocol'}
+      </Button>
+
+      {/* ICF Button */}
+      <Button 
+        onClick={() => handleGenerate('ICF')}
+        disabled={loadingType !== null}
+        variant="outline"
+        size="sm"
+      >
+        {isLoading('ICF') ? (
+          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+        ) : (
+          <FileSignature className="w-4 h-4 mr-2" />
+        )}
+        {isLoading('ICF') ? 'Generating...' : 'Generate ICF'}
       </Button>
     </div>
   )
