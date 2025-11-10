@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { FileText, Plus, Calendar, MapPin, Database, CheckCircle, AlertCircle, FlaskConical, BookOpen, Shield } from 'lucide-react'
+import { FileText, Plus, Calendar, MapPin, Database, CheckCircle, AlertCircle, FlaskConical, BookOpen, Shield, ExternalLink } from 'lucide-react'
 import { GenerateDocumentButton } from '@/components/generate-document-button'
 import { FetchExternalDataButton } from '@/components/fetch-external-data-button'
 import { FileUpload } from '@/components/file-upload'
@@ -355,11 +355,23 @@ export default async function ProjectPage({ params }: { params: { id: string } }
               <TabsContent value="clinical-trials" className="space-y-3 mt-4">
                 {evidenceSources.filter(e => e.source === 'ClinicalTrials.gov').map((evidence) => {
                   const payload = evidence.payload_json as any
+                  const ctUrl = `https://clinicaltrials.gov/study/${evidence.external_id}`
                   return (
                     <div key={evidence.id} className="p-4 border rounded-lg hover:bg-gray-50 transition">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Badge variant="outline">{evidence.external_id}</Badge>
-                        {payload?.phase && <Badge>{payload.phase}</Badge>}
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline">{evidence.external_id}</Badge>
+                          {payload?.phase && <Badge>{payload.phase}</Badge>}
+                        </div>
+                        <a 
+                          href={ctUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800 flex items-center gap-1 text-xs"
+                        >
+                          View on ClinicalTrials.gov
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
                       </div>
                       <p className="font-medium text-sm mb-1">{payload?.title || 'No title'}</p>
                       {payload?.status && (
@@ -380,10 +392,20 @@ export default async function ProjectPage({ params }: { params: { id: string } }
               <TabsContent value="publications" className="space-y-3 mt-4">
                 {evidenceSources.filter(e => e.source === 'PubMed').map((evidence) => {
                   const payload = evidence.payload_json as any
+                  const pubmedUrl = `https://pubmed.ncbi.nlm.nih.gov/${evidence.external_id}/`
                   return (
                     <div key={evidence.id} className="p-4 border rounded-lg hover:bg-gray-50 transition">
-                      <div className="flex items-center gap-2 mb-2">
+                      <div className="flex items-center justify-between mb-2">
                         <Badge variant="outline">PMID: {evidence.external_id}</Badge>
+                        <a 
+                          href={pubmedUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800 flex items-center gap-1 text-xs"
+                        >
+                          View on PubMed
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
                       </div>
                       <p className="font-medium text-sm mb-1">{payload?.title || 'No title'}</p>
                       {payload?.abstract && (
@@ -407,11 +429,23 @@ export default async function ProjectPage({ params }: { params: { id: string } }
               <TabsContent value="safety" className="space-y-3 mt-4">
                 {evidenceSources.filter(e => e.source === 'openFDA').map((evidence) => {
                   const payload = evidence.payload_json as any
+                  const fdaUrl = `https://open.fda.gov/apis/drug/event/`
                   return (
                     <div key={evidence.id} className="p-4 border rounded-lg hover:bg-gray-50 transition">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Badge variant="outline">openFDA</Badge>
-                        {payload?.seriousness && <Badge variant="destructive">Serious</Badge>}
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline">openFDA</Badge>
+                          {payload?.seriousness && <Badge variant="destructive">Serious</Badge>}
+                        </div>
+                        <a 
+                          href={fdaUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800 flex items-center gap-1 text-xs"
+                        >
+                          View on openFDA
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
                       </div>
                       <p className="font-medium text-sm mb-1">{payload?.drugName || 'No drug name'}</p>
                       {payload?.reactions && (
