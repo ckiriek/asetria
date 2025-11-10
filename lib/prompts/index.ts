@@ -11,10 +11,15 @@
  * - Best practices from clinical trial protocol authoring research
  */
 
-export { generateIBPrompt, IB_EXAMPLES } from './ib-prompt'
-export { generateProtocolPrompt } from './protocol-prompt'
-export { generateICFPrompt } from './icf-prompt'
-export { generateSynopsisPrompt } from './synopsis-prompt'
+import { generateIBPrompt, IB_EXAMPLES } from './ib-prompt'
+import { generateProtocolPrompt } from './protocol-prompt'
+import { generateICFPrompt } from './icf-prompt'
+import { generateSynopsisPrompt } from './synopsis-prompt'
+
+export { generateIBPrompt, IB_EXAMPLES }
+export { generateProtocolPrompt }
+export { generateICFPrompt }
+export { generateSynopsisPrompt }
 
 export type { 
   DocumentSection,
