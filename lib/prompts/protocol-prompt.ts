@@ -44,8 +44,26 @@ export function generateProtocolPrompt(context: ProtocolContext): string {
   const population = entities.filter(e => e.type === 'population').map(e => e.value)
   const dosages = entities.filter(e => e.type === 'dosage').map(e => e.value)
   
-  // Use primary_endpoint from design_json if available, otherwise use extracted endpoints
-  const primaryEndpoint = design?.primary_endpoint || endpoints[0] || 'Change from baseline in [primary measure]'
+  // Extract most common endpoint from clinical trials if primary_endpoint not provided
+  let mostCommonEndpoint = ''
+  if (!design?.primary_endpoint && clinicalTrials.length > 0) {
+    // Count endpoint occurrences across trials
+    const endpointCounts: Record<string, number> = {}
+    clinicalTrials.forEach(trial => {
+      if (trial.primaryOutcome) {
+        const endpoint = trial.primaryOutcome
+        endpointCounts[endpoint] = (endpointCounts[endpoint] || 0) + 1
+      }
+    })
+    // Find most common
+    const sorted = Object.entries(endpointCounts).sort((a, b) => b[1] - a[1])
+    if (sorted.length > 0) {
+      mostCommonEndpoint = sorted[0][0]
+    }
+  }
+  
+  // Priority: design.primary_endpoint > mostCommonEndpoint from trials > extracted endpoints > fallback
+  const primaryEndpoint = design?.primary_endpoint || mostCommonEndpoint || endpoints[0] || 'Change from baseline in [primary measure]'
   const secondaryEndpoints = design?.primary_endpoint ? endpoints : endpoints.slice(1)
 
   return `You are an expert clinical trial protocol writer with extensive experience in designing and documenting clinical studies. Generate a comprehensive Clinical Trial Protocol that complies with ICH E6 Section 6 requirements.

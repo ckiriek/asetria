@@ -3,6 +3,8 @@
  * Based on ICH E3 Guidelines - Section 2
  */
 
+import { ClinicalTrialData } from './schemas'
+
 interface SynopsisContext {
   projectTitle: string
   compoundName: string
@@ -17,6 +19,7 @@ interface SynopsisContext {
     type: string
     value: string
   }>
+  clinicalTrials?: ClinicalTrialData[]
 }
 
 export function generateSynopsisPrompt(context: SynopsisContext): string {
@@ -27,13 +30,32 @@ export function generateSynopsisPrompt(context: SynopsisContext): string {
     phase,
     sponsor,
     design,
-    entities
+    entities,
+    clinicalTrials = []
   } = context
 
   const endpoints = entities.filter(e => e.type === 'endpoint').map(e => e.value)
   const dosages = entities.filter(e => e.type === 'dosage').map(e => e.value)
   
-  const primaryEndpoint = design?.primary_endpoint || endpoints[0] || 'Change from baseline in [primary measure]'
+  // Extract most common endpoint from clinical trials if primary_endpoint not provided
+  let mostCommonEndpoint = ''
+  if (!design?.primary_endpoint && clinicalTrials.length > 0) {
+    // Count endpoint occurrences across trials
+    const endpointCounts: Record<string, number> = {}
+    clinicalTrials.forEach(trial => {
+      if (trial.primaryOutcome) {
+        const endpoint = trial.primaryOutcome
+        endpointCounts[endpoint] = (endpointCounts[endpoint] || 0) + 1
+      }
+    })
+    // Find most common
+    const sorted = Object.entries(endpointCounts).sort((a, b) => b[1] - a[1])
+    if (sorted.length > 0) {
+      mostCommonEndpoint = sorted[0][0]
+    }
+  }
+  
+  const primaryEndpoint = design?.primary_endpoint || mostCommonEndpoint || 'Change from baseline in [primary measure]'
   const secondaryEndpoints = design?.primary_endpoint ? endpoints : endpoints.slice(1)
 
   return `You are an expert medical writer specializing in clinical study reports. Generate a comprehensive Clinical Study Synopsis that complies with ICH E3 Section 2 requirements.

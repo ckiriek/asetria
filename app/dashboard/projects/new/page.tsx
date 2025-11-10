@@ -237,8 +237,11 @@ export default function NewProjectPage() {
                 <Input
                   value={formData.primary_endpoint}
                   onChange={(e) => setFormData({ ...formData, primary_endpoint: e.target.value })}
-                  placeholder="e.g., Change in HbA1c from baseline"
+                  placeholder="e.g., Change in HbA1c from baseline at Week 24"
                 />
+                <p className="mt-1 text-xs text-gray-500">
+                  💡 If left empty, we'll automatically use the most common endpoint from similar clinical trials for your indication.
+                </p>
               </div>
             </div>
 
