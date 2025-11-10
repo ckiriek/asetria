@@ -66,6 +66,25 @@ serve(async (req) => {
       .update({ status: status === 'approved' ? 'approved' : 'review' })
       .eq('id', documentId)
 
+    // 6. Save validation results to database
+    const sortedResults = results.sort((a, b) => {
+      // Sort failed checks first, then by section
+      if (a.passed !== b.passed) return a.passed ? 1 : -1
+      return a.section_ref.localeCompare(b.section_ref)
+    })
+
+    await supabaseClient
+      .from('validation_results')
+      .insert({
+        document_id: documentId,
+        completeness_score: Math.round(completenessScore),
+        status,
+        total_rules: totalCount,
+        passed: passedCount,
+        failed: totalCount - passedCount,
+        results: sortedResults,
+      })
+
     return new Response(
       JSON.stringify({
         success: true,
@@ -74,11 +93,7 @@ serve(async (req) => {
         total_rules: totalCount,
         passed: passedCount,
         failed: totalCount - passedCount,
-        results: results.sort((a, b) => {
-          // Sort failed checks first, then by section
-          if (a.passed !== b.passed) return a.passed ? 1 : -1
-          return a.section_ref.localeCompare(b.section_ref)
-        }),
+        results: sortedResults,
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

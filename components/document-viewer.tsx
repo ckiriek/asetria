@@ -34,7 +34,8 @@ export function DocumentViewer({ content, documentType }: DocumentViewerProps) {
       if (match) {
         const level = match[1].length
         const text = match[2].trim()
-        const id = `heading-${index}-${text.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
+        // Use same ID format as headings below (without index)
+        const id = `heading-${text.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
         headings.push({ id, text, level })
       }
     })

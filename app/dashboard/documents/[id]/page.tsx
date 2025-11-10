@@ -30,6 +30,15 @@ export default async function DocumentPage({ params }: { params: { id: string } 
     notFound()
   }
 
+  // Fetch latest validation results
+  const { data: validationResults } = await supabase
+    .from('validation_results')
+    .select('*')
+    .eq('document_id', params.id)
+    .order('validation_date', { ascending: false })
+    .limit(1)
+    .single()
+
   const project = Array.isArray(document.projects) ? document.projects[0] : document.projects
 
   return (
@@ -163,7 +172,7 @@ export default async function DocumentPage({ params }: { params: { id: string } 
         </Card>
       )}
 
-      {/* Validation Results (if available) */}
+      {/* Validation Results */}
       <Card>
         <CardHeader>
           <CardTitle>Validation Results</CardTitle>
@@ -172,13 +181,60 @@ export default async function DocumentPage({ params }: { params: { id: string } 
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-8 text-gray-500">
-            <CheckCircle className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-            <p>No validation results yet</p>
-            <p className="text-sm mt-2">
-              Click "Validate" to check document compliance
-            </p>
-          </div>
+          {validationResults ? (
+            <div className="space-y-4">
+              {/* Summary */}
+              <div className="grid grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
+                <div>
+                  <p className="text-sm text-gray-600">Completeness Score</p>
+                  <p className="text-2xl font-bold text-gray-900">{validationResults.completeness_score}%</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Status</p>
+                  <Badge variant={validationResults.status === 'approved' ? 'default' : validationResults.status === 'review' ? 'secondary' : 'destructive'}>
+                    {validationResults.status}
+                  </Badge>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Checks Passed</p>
+                  <p className="text-2xl font-bold text-gray-900">{validationResults.passed}/{validationResults.total_rules}</p>
+                </div>
+              </div>
+
+              {/* Detailed Results */}
+              <div className="space-y-2">
+                <h3 className="font-semibold text-sm text-gray-700">Detailed Checks</h3>
+                {(validationResults.results as any[]).map((result: any, index: number) => (
+                  <div key={index} className={`p-3 rounded-lg border ${
+                    result.passed ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'
+                  }`}>
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <p className="font-medium text-sm">{result.rule_name}</p>
+                        <p className="text-xs text-gray-600 mt-1">{result.section_ref}</p>
+                        <p className="text-sm mt-2">{result.message}</p>
+                      </div>
+                      <Badge variant={result.passed ? 'default' : 'destructive'} className="ml-2">
+                        {result.passed ? 'Passed' : 'Failed'}
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <p className="text-xs text-gray-500 mt-4">
+                Last validated: {new Date(validationResults.validation_date).toLocaleString()}
+              </p>
+            </div>
+          ) : (
+            <div className="text-center py-8 text-gray-500">
+              <CheckCircle className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+              <p>No validation results yet</p>
+              <p className="text-sm mt-2">
+                Click "Validate" to check document compliance
+              </p>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
