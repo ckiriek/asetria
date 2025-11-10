@@ -9,6 +9,10 @@ interface SynopsisContext {
   indication: string
   phase: string
   sponsor: string
+  design?: {
+    primary_endpoint?: string
+    duration_weeks?: number
+  }
   entities: Array<{
     type: string
     value: string
@@ -22,11 +26,15 @@ export function generateSynopsisPrompt(context: SynopsisContext): string {
     indication,
     phase,
     sponsor,
+    design,
     entities
   } = context
 
   const endpoints = entities.filter(e => e.type === 'endpoint').map(e => e.value)
   const dosages = entities.filter(e => e.type === 'dosage').map(e => e.value)
+  
+  const primaryEndpoint = design?.primary_endpoint || endpoints[0] || 'Change from baseline in [primary measure]'
+  const secondaryEndpoints = design?.primary_endpoint ? endpoints : endpoints.slice(1)
 
   return `You are an expert medical writer specializing in clinical study reports. Generate a comprehensive Clinical Study Synopsis that complies with ICH E3 Section 2 requirements.
 
@@ -68,10 +76,10 @@ Create a Clinical Study Synopsis that:
 ### 1. STUDY OBJECTIVES
 
 #### Primary Objective
-${endpoints.length > 0 ? `To evaluate ${endpoints[0]} in patients with ${indication} treated with ${compoundName}` : `To evaluate the efficacy and safety of ${compoundName} in patients with ${indication}`}
+To evaluate ${primaryEndpoint} in patients with ${indication} treated with ${compoundName}
 
 #### Secondary Objectives
-${endpoints.slice(1, 3).map((e, i) => `${i + 1}. To assess ${e}`).join('\n') || '- To evaluate safety and tolerability\n- To characterize pharmacokinetics'}
+${secondaryEndpoints.length > 0 ? secondaryEndpoints.slice(0, 3).map((e, i) => `${i + 1}. To assess ${e}`).join('\n') : '1. To evaluate safety and tolerability\n2. To characterize pharmacokinetics\n3. To assess quality of life'}
 
 ---
 
@@ -103,10 +111,13 @@ ${endpoints.slice(1, 3).map((e, i) => `${i + 1}. To assess ${e}`).join('\n') || 
 ### 3. STUDY ENDPOINTS
 
 #### Primary Endpoint
-${endpoints[0] || 'Change from baseline in [primary measure] at Week [X]'}
+**${primaryEndpoint}**
+${design?.duration_weeks ? `- Timepoint: Week ${design.duration_weeks}` : '- Timepoint: [specify]'}
+- Target: [specify target difference vs comparator]
+- Analysis: [statistical method]
 
 #### Secondary Endpoints
-${endpoints.slice(1, 4).map((e, i) => `${i + 1}. ${e}`).join('\n') || '1. Safety and tolerability\n2. Pharmacokinetic parameters\n3. Quality of life measures'}
+${secondaryEndpoints.length > 0 ? secondaryEndpoints.slice(0, 4).map((e, i) => `${i + 1}. ${e}`).join('\n') : '1. Safety and tolerability\n2. Pharmacokinetic parameters\n3. Quality of life measures\n4. Biomarker analyses'}
 
 #### Exploratory Endpoints
 - Biomarker analyses
@@ -245,7 +256,7 @@ ${endpoints.slice(1, 4).map((e, i) => `${i + 1}. ${e}`).join('\n') || '1. Safety
 ### 9. CONCLUSIONS
 
 #### Efficacy
-- ${compoundName} demonstrated statistically significant improvement in ${endpoints[0] || 'the primary endpoint'} compared to placebo
+- ${compoundName} demonstrated statistically significant improvement in ${primaryEndpoint} compared to placebo
 - Secondary endpoints supported the primary efficacy findings
 - Treatment effect was consistent across subgroups
 

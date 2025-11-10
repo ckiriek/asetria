@@ -15,6 +15,9 @@ interface IBContext {
   indication: string
   phase: string
   sponsor: string
+  design?: {
+    primary_endpoint?: string
+  }
   entities: Array<{
     type: string
     value: string
@@ -32,6 +35,7 @@ export function generateIBPrompt(context: IBContext): string {
     indication, 
     phase, 
     sponsor,
+    design,
     entities,
     clinicalTrials = [],
     publications = [],
@@ -42,6 +46,10 @@ export function generateIBPrompt(context: IBContext): string {
   const dosages = entities.filter(e => e.type === 'dosage').map(e => e.value)
   const endpoints = entities.filter(e => e.type === 'endpoint').map(e => e.value)
   const population = entities.filter(e => e.type === 'population').map(e => e.value)
+  
+  // Use primary_endpoint from design if available
+  const primaryEndpoint = design?.primary_endpoint
+  const allEndpoints = primaryEndpoint ? [primaryEndpoint, ...endpoints] : endpoints
 
   return `You are an expert medical writer specializing in regulatory documentation for clinical trials. Your task is to generate a comprehensive Investigator's Brochure (IB) that complies with ICH E6 (R2) Good Clinical Practice guidelines.
 
@@ -135,7 +143,7 @@ ${dosages.length > 0 ? `- Studied dosages: ${dosages.join(', ')}` : '- Dose-rang
 - Mechanism of action in humans
 - Dose-response relationships
 - Biomarkers and surrogate endpoints
-${endpoints.length > 0 ? `- Key endpoints: ${endpoints.join(', ')}` : ''}
+${allEndpoints.length > 0 ? `- Key endpoints: ${allEndpoints.join(', ')}` : ''}
 
 #### 7.3 Efficacy
 ${publications.length > 0 ? `

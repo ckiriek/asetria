@@ -11,6 +11,13 @@ interface ProtocolContext {
   indication: string
   phase: string
   sponsor: string
+  design?: {
+    primary_endpoint?: string
+    design_type?: string
+    blinding?: string
+    arms?: number
+    duration_weeks?: number
+  }
   entities: Array<{
     type: string
     value: string
@@ -27,6 +34,7 @@ export function generateProtocolPrompt(context: ProtocolContext): string {
     indication, 
     phase, 
     sponsor,
+    design,
     entities,
     clinicalTrials = [],
     publications = []
@@ -35,6 +43,10 @@ export function generateProtocolPrompt(context: ProtocolContext): string {
   const endpoints = entities.filter(e => e.type === 'endpoint').map(e => e.value)
   const population = entities.filter(e => e.type === 'population').map(e => e.value)
   const dosages = entities.filter(e => e.type === 'dosage').map(e => e.value)
+  
+  // Use primary_endpoint from design_json if available, otherwise use extracted endpoints
+  const primaryEndpoint = design?.primary_endpoint || endpoints[0] || 'Change from baseline in [primary measure]'
+  const secondaryEndpoints = design?.primary_endpoint ? endpoints : endpoints.slice(1)
 
   return `You are an expert clinical trial protocol writer with extensive experience in designing and documenting clinical studies. Generate a comprehensive Clinical Trial Protocol that complies with ICH E6 Section 6 requirements.
 
@@ -112,10 +124,10 @@ ${clinicalTrials.slice(0, 2).map(trial => `
 ### 6. STUDY OBJECTIVES AND ENDPOINTS
 
 #### 6.1 Primary Objective
-${endpoints.length > 0 ? `To evaluate ${endpoints[0]} in patients with ${indication}` : `To evaluate the efficacy and safety of ${compoundName}`}
+To evaluate ${primaryEndpoint} in patients with ${indication} treated with ${compoundName}
 
 #### 6.2 Secondary Objectives
-${endpoints.slice(1, 3).map((e, i) => `${i + 1}. To assess ${e}`).join('\n') || '- To be defined based on study design'}
+${secondaryEndpoints.length > 0 ? secondaryEndpoints.slice(0, 3).map((e, i) => `${i + 1}. To assess ${e}`).join('\n') : '1. To evaluate safety and tolerability\n2. To characterize pharmacokinetics\n3. To assess quality of life'}
 
 #### 6.3 Exploratory Objectives
 - Pharmacokinetic/pharmacodynamic relationships
@@ -217,13 +229,14 @@ ${dosages.length > 0 ? `- Dose: ${dosages.join(' or ')}` : '- Dose: To be determ
 ### 11. EFFICACY ASSESSMENTS
 
 #### 11.1 Primary Efficacy Endpoint
-${endpoints[0] || 'Change from baseline in [primary measure]'}
-- Assessment method
-- Timing of assessments
-- Validity and reliability
+**${primaryEndpoint}**
+- Assessment method: [Specify measurement technique]
+- Timing: Baseline${design?.duration_weeks ? `, Week ${Math.floor(design.duration_weeks / 2)}, Week ${design.duration_weeks}` : ', [timepoints]'}
+- Validity and reliability: [Validated instrument/method]
+- Analysis: [Statistical approach, e.g., ANCOVA with baseline as covariate]
 
 #### 11.2 Secondary Efficacy Endpoints
-${endpoints.slice(1, 3).join('\n- ') || '- To be defined'}
+${secondaryEndpoints.length > 0 ? secondaryEndpoints.slice(0, 3).map(e => `- ${e}`).join('\n') : '- Safety and tolerability\n- Pharmacokinetic parameters\n- Quality of life measures'}
 
 ### 12. SAFETY ASSESSMENTS
 

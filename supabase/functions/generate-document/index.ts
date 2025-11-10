@@ -132,6 +132,7 @@ function generatePrompt(documentType: string, context: any): string {
     indication: context.project.indication,
     phase: context.project.phase,
     sponsor: 'Sponsor Name', // TODO: Add to project metadata
+    design: context.project.design, // Include design_json with primary_endpoint
     entities: context.entities.all || [],
     clinicalTrials: context.evidence.clinical_trials || [],
     publications: context.evidence.publications || [],
