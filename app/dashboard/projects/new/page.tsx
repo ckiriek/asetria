@@ -14,6 +14,7 @@ export default function NewProjectPage() {
     title: '',
     phase: 'Phase 2',
     indication: '',
+    drug_class: '',
     countries: '',
     design_type: 'randomized',
     blinding: 'double-blind',
@@ -62,6 +63,7 @@ export default function NewProjectPage() {
           title: formData.title,
           phase: formData.phase,
           indication: formData.indication,
+          drug_class: formData.drug_class || null,
           countries: countriesArray,
           design_json: designJson,
           org_id: userData?.org_id,
@@ -139,6 +141,21 @@ export default function NewProjectPage() {
                 onChange={(e) => setFormData({ ...formData, indication: e.target.value })}
                 placeholder="e.g., Type 2 Diabetes"
               />
+            </div>
+
+            {/* Drug Class / Active Ingredient */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Drug Class / Active Ingredient
+              </label>
+              <Input
+                value={formData.drug_class}
+                onChange={(e) => setFormData({ ...formData, drug_class: e.target.value })}
+                placeholder="e.g., DPP-4 inhibitor, metformin, SGLT2 inhibitor"
+              />
+              <p className="mt-1 text-xs text-gray-500">
+                Used for safety data search. For investigational drugs, specify the drug class or similar approved drug.
+              </p>
             </div>
 
             {/* Countries */}

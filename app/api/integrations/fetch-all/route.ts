@@ -88,12 +88,24 @@ export async function POST(request: Request) {
       const fdaClient = new OpenFDAClient()
       
       // Try to find safety data for similar approved drugs
-      // For investigational drugs, search by drug class or indication
+      // Priority: drug_class > compound name > indication-based fallback
       
-      // Strategy 1: Try exact compound name (for approved drugs)
-      let adverseEvents = await fdaClient.searchAdverseEvents(project.title.split(' ')[0], 10)
+      let adverseEvents: any[] = []
+      let searchStrategy = ''
       
-      // Strategy 2: If no results, try searching by indication keywords
+      // Strategy 1: Use drug_class if provided (best option)
+      if (project.drug_class) {
+        adverseEvents = await fdaClient.searchAdverseEvents(project.drug_class, 10)
+        searchStrategy = `drug_class: ${project.drug_class}`
+      }
+      
+      // Strategy 2: Try exact compound name from title (for approved drugs)
+      if (adverseEvents.length === 0) {
+        adverseEvents = await fdaClient.searchAdverseEvents(project.title.split(' ')[0], 10)
+        searchStrategy = `compound: ${project.title.split(' ')[0]}`
+      }
+      
+      // Strategy 3: Fallback to indication-based drug class mapping
       if (adverseEvents.length === 0 && project.indication) {
         // Map indication to common drug classes
         const drugClassMap: Record<string, string[]> = {
@@ -110,6 +122,7 @@ export async function POST(request: Request) {
             // Try first drug in class
             adverseEvents = await fdaClient.searchAdverseEvents(drugs[0], 10)
             if (adverseEvents.length > 0) {
+              searchStrategy = `indication fallback: ${drugs[0]} (${condition})`
               // Add note that this is class-based data
               adverseEvents = adverseEvents.map(event => ({
                 ...event,
@@ -119,6 +132,11 @@ export async function POST(request: Request) {
             }
           }
         }
+      }
+      
+      // Add search strategy to results for transparency
+      if (adverseEvents.length > 0 && searchStrategy) {
+        console.log(`openFDA search strategy: ${searchStrategy}`)
       }
       
       results.safetyData = adverseEvents
