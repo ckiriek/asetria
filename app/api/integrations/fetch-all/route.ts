@@ -1,0 +1,140 @@
+import { NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server'
+import { ClinicalTrialsClient } from '@/lib/integrations/clinicaltrials'
+import { PubMedClient } from '@/lib/integrations/pubmed'
+import { OpenFDAClient } from '@/lib/integrations/openfda'
+
+export async function POST(request: Request) {
+  try {
+    const supabase = await createClient()
+    
+    // Check authentication
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const { projectId } = await request.json()
+
+    if (!projectId) {
+      return NextResponse.json({ error: 'Project ID is required' }, { status: 400 })
+    }
+
+    // Fetch project details
+    const { data: project, error: projectError } = await supabase
+      .from('projects')
+      .select('*')
+      .eq('id', projectId)
+      .single()
+
+    if (projectError || !project) {
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 })
+    }
+
+    const results = {
+      clinicalTrials: [] as any[],
+      publications: [] as any[],
+      safetyData: [] as any[],
+      errors: [] as string[]
+    }
+
+    // 1. Fetch from ClinicalTrials.gov
+    try {
+      const ctClient = new ClinicalTrialsClient()
+      
+      // Search by indication
+      const trials = await ctClient.searchByCondition(project.indication, 10)
+      results.clinicalTrials = trials
+
+      // Save to evidence_sources
+      for (const trial of trials) {
+        await supabase.from('evidence_sources').insert({
+          project_id: projectId,
+          source: 'ClinicalTrials.gov',
+          external_id: trial.nctId,
+          payload_json: trial
+        })
+      }
+    } catch (error: any) {
+      console.error('ClinicalTrials.gov error:', error)
+      results.errors.push(`ClinicalTrials.gov: ${error.message}`)
+    }
+
+    // 2. Fetch from PubMed
+    try {
+      const pubmedClient = new PubMedClient()
+      
+      // Search by compound name or indication
+      const searchTerm = `${project.title} ${project.indication}`
+      const publications = await pubmedClient.search(searchTerm, 10)
+      results.publications = publications
+
+      // Save to evidence_sources
+      for (const pub of publications) {
+        await supabase.from('evidence_sources').insert({
+          project_id: projectId,
+          source: 'PubMed',
+          external_id: pub.pmid,
+          payload_json: pub
+        })
+      }
+    } catch (error: any) {
+      console.error('PubMed error:', error)
+      results.errors.push(`PubMed: ${error.message}`)
+    }
+
+    // 3. Fetch from openFDA
+    try {
+      const fdaClient = new OpenFDAClient()
+      
+      // Extract drug name from title (simplified)
+      const drugName = project.title.split(' ')[0] // First word as drug name
+      
+      const adverseEvents = await fdaClient.searchAdverseEvents(drugName, 10)
+      results.safetyData = adverseEvents
+
+      // Save to evidence_sources
+      for (const event of adverseEvents) {
+        await supabase.from('evidence_sources').insert({
+          project_id: projectId,
+          source: 'openFDA',
+          external_id: `${drugName}-${event.receiptDate}`,
+          payload_json: event
+        })
+      }
+    } catch (error: any) {
+      console.error('openFDA error:', error)
+      results.errors.push(`openFDA: ${error.message}`)
+    }
+
+    // Log audit trail
+    await supabase.from('audit_log').insert({
+      project_id: projectId,
+      actor_user_id: user.id,
+      action: 'external_data_fetched',
+      diff_json: {
+        clinicalTrials: results.clinicalTrials.length,
+        publications: results.publications.length,
+        safetyData: results.safetyData.length,
+        errors: results.errors
+      }
+    })
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        clinicalTrials: results.clinicalTrials.length,
+        publications: results.publications.length,
+        safetyData: results.safetyData.length,
+        errors: results.errors
+      }
+    })
+
+  } catch (error: any) {
+    console.error('Error fetching external data:', error)
+    return NextResponse.json(
+      { error: error.message || 'Failed to fetch external data' },
+      { status: 500 }
+    )
+  }
+}
