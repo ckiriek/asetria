@@ -8,6 +8,12 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
+import { Spinner } from '@/components/ui/spinner'
+import { FileText, Download, Edit, Rocket, Database, Settings } from 'lucide-react'
 
 interface Document {
   id: string
@@ -59,7 +65,7 @@ export function DocumentsDashboard({ projectId }: { projectId: string }) {
   if (loading) {
     return (
       <div className="flex items-center justify-center p-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <Spinner size="lg" />
       </div>
     )
   }
@@ -77,188 +83,206 @@ export function DocumentsDashboard({ projectId }: { projectId: string }) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 fade-in">
       {/* Project Header */}
       {project && (
-        <div className="bg-white border border-gray-200 rounded-lg p-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">{project.title}</h1>
-          <div className="flex gap-4 text-sm text-gray-600">
-            <span>Phase: {project.phase}</span>
-            <span>•</span>
-            <span>Indication: {project.indication}</span>
-          </div>
-        </div>
+        <Card>
+          <CardContent className="pt-6">
+            <h1 className="text-3xl font-semibold tracking-tight mb-3">{project.title}</h1>
+            <div className="flex items-center gap-3">
+              <Badge size="lg">{project.phase}</Badge>
+              <Separator orientation="vertical" className="h-6" />
+              <span className="text-muted-foreground">{project.indication}</span>
+            </div>
+          </CardContent>
+        </Card>
       )}
 
       {/* Documents Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {documentTypes.map((docType) => {
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {documentTypes.map((docType, index) => {
           const doc = documents.find((d) => d.type === docType)
           const badge = doc ? getStatusBadge(doc.status) : null
 
           return (
-            <div
+            <Card
               key={docType}
-              className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow"
+              className="hover-lift slide-in-from-bottom"
+              style={{ animationDelay: `${index * 50}ms` }}
             >
-              {/* Document Type */}
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">{docType}</h3>
-                  <p className="text-sm text-gray-500">
-                    {docType === 'IB' && 'Investigator Brochure'}
-                    {docType === 'Protocol' && 'Clinical Study Protocol'}
-                    {docType === 'ICF' && 'Informed Consent Form'}
-                    {docType === 'CSR' && 'Clinical Study Report'}
-                    {docType === 'SAP' && 'Statistical Analysis Plan'}
-                  </p>
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                      <FileText className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg">{docType}</CardTitle>
+                      <CardDescription className="text-xs">
+                        {docType === 'IB' && 'Investigator Brochure'}
+                        {docType === 'Protocol' && 'Clinical Study Protocol'}
+                        {docType === 'ICF' && 'Informed Consent Form'}
+                        {docType === 'CSR' && 'Clinical Study Report'}
+                        {docType === 'SAP' && 'Statistical Analysis Plan'}
+                      </CardDescription>
+                    </div>
+                  </div>
+                  {badge && (
+                    <Badge
+                      variant={
+                        badge.color === 'green' ? 'success' :
+                        badge.color === 'blue' ? 'info' :
+                        badge.color === 'yellow' ? 'warning' : 'secondary'
+                      }
+                      size="sm"
+                    >
+                      {badge.text}
+                    </Badge>
+                  )}
                 </div>
-                {badge && (
-                  <span
-                    className={`
-                      px-2 py-1 text-xs font-medium rounded
-                      ${badge.color === 'gray' ? 'bg-gray-100 text-gray-700' : ''}
-                      ${badge.color === 'blue' ? 'bg-blue-100 text-blue-700' : ''}
-                      ${badge.color === 'green' ? 'bg-green-100 text-green-700' : ''}
-                      ${badge.color === 'yellow' ? 'bg-yellow-100 text-yellow-700' : ''}
-                    `}
-                  >
-                    {badge.icon} {badge.text}
-                  </span>
-                )}
-              </div>
+              </CardHeader>
 
-              {/* Document Info */}
-              {doc ? (
-                <div className="space-y-3">
-                  <div className="text-sm text-gray-600">
-                    Version: v{doc.version}
-                  </div>
-                  <div className="text-xs text-gray-500">
-                    Updated: {new Date(doc.updated_at).toLocaleDateString()}
-                  </div>
+              <CardContent>
+                {doc ? (
+                  <div className="space-y-4">
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Version:</span>
+                        <span className="font-medium">v{doc.version}</span>
+                      </div>
+                      <Separator />
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Updated:</span>
+                        <span className="font-medium text-xs">
+                          {new Date(doc.updated_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
 
-                  {/* Actions */}
-                  <div className="flex gap-2 pt-3 border-t border-gray-200">
-                    <Link
-                      href={`/documents/${doc.id}`}
-                      className="flex-1 px-3 py-2 text-sm font-medium text-center text-blue-600 hover:bg-blue-50 rounded-lg border border-blue-200"
-                    >
-                      View
-                    </Link>
-                    <Link
-                      href={`/documents/${doc.id}/edit`}
-                      className="flex-1 px-3 py-2 text-sm font-medium text-center text-gray-700 hover:bg-gray-50 rounded-lg border border-gray-300"
-                    >
-                      Edit
-                    </Link>
-                    <button
+                    {/* Actions */}
+                    <div className="flex gap-2 pt-2">
+                      <Link href={`/dashboard/documents/${doc.id}`} className="flex-1">
+                        <Button variant="default" size="sm" className="w-full gap-2">
+                          <FileText className="h-4 w-4" />
+                          View
+                        </Button>
+                      </Link>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={async () => {
+                          try {
+                            const response = await fetch(`/api/v1/export`, {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({
+                                document_id: doc.id,
+                                format: 'pdf',
+                              }),
+                            })
+                            const data = await response.json()
+                            if (data.success && data.data.url) {
+                              window.open(data.data.url, '_blank')
+                            }
+                          } catch (error) {
+                            console.error('Failed to export:', error)
+                          }
+                        }}
+                        title="Download PDF"
+                      >
+                        <Download className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <p className="text-sm text-muted-foreground">Not generated yet</p>
+
+                    {/* Generate Button */}
+                    <Button
                       onClick={async () => {
                         try {
-                          const response = await fetch(`/api/v1/export`, {
+                          const response = await fetch('/api/v1/workflow/start', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
-                              document_id: doc.id,
-                              format: 'pdf',
+                              project_id: projectId,
+                              document_type: docType.toLowerCase(),
+                              auto_execute: true,
                             }),
                           })
                           const data = await response.json()
-                          if (data.success && data.data.url) {
-                            window.open(data.data.url, '_blank')
+                          if (data.success) {
+                            window.location.href = `/workflow/${data.data.execution.id}`
                           }
                         } catch (error) {
-                          console.error('Failed to export:', error)
+                          console.error('Failed to start workflow:', error)
                         }
                       }}
-                      className="px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg border border-gray-300"
-                      title="Download PDF"
+                      className="w-full gap-2"
+                      size="sm"
                     >
-                      📥
-                    </button>
+                      <Rocket className="h-4 w-4" />
+                      Generate {docType}
+                    </Button>
                   </div>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  <p className="text-sm text-gray-500">Not generated yet</p>
-
-                  {/* Generate Button */}
-                  <button
-                    onClick={async () => {
-                      try {
-                        const response = await fetch('/api/v1/workflow/start', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({
-                            project_id: projectId,
-                            document_type: docType.toLowerCase(),
-                            auto_execute: true,
-                          }),
-                        })
-                        const data = await response.json()
-                        if (data.success) {
-                          // Redirect to workflow status page
-                          window.location.href = `/workflow/${data.data.execution.id}`
-                        }
-                      } catch (error) {
-                        console.error('Failed to start workflow:', error)
-                      }
-                    }}
-                    className="w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg"
-                  >
-                    Generate {docType}
-                  </button>
-                </div>
-              )}
-            </div>
+                )}
+              </CardContent>
+            </Card>
           )
         })}
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-white border border-gray-200 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <button
-            onClick={async () => {
-              try {
-                // Generate all documents
-                for (const docType of documentTypes) {
-                  await fetch('/api/v1/workflow/start', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                      project_id: projectId,
-                      document_type: docType.toLowerCase(),
-                      auto_execute: true,
-                    }),
-                  })
+      <Card className="hover-lift">
+        <CardHeader>
+          <CardTitle className="text-xl">Quick Actions</CardTitle>
+          <CardDescription>Batch operations and project management</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Button
+              onClick={async () => {
+                try {
+                  for (const docType of documentTypes) {
+                    await fetch('/api/v1/workflow/start', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        project_id: projectId,
+                        document_type: docType.toLowerCase(),
+                        auto_execute: true,
+                      }),
+                    })
+                  }
+                  alert('All workflows started!')
+                } catch (error) {
+                  console.error('Failed to start workflows:', error)
                 }
-                alert('All workflows started!')
-              } catch (error) {
-                console.error('Failed to start workflows:', error)
-              }
-            }}
-            className="px-4 py-3 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg"
-          >
-            🚀 Generate All Documents
-          </button>
+              }}
+              size="lg"
+              className="gap-2"
+            >
+              <Rocket className="h-5 w-5" />
+              Generate All Documents
+            </Button>
 
-          <Link
-            href={`/projects/${projectId}/evidence`}
-            className="px-4 py-3 text-sm font-medium text-center text-gray-700 hover:bg-gray-50 rounded-lg border border-gray-300"
-          >
-            📚 View Evidence Locker
-          </Link>
+            <Link href={`/projects/${projectId}/evidence`}>
+              <Button variant="outline" size="lg" className="w-full gap-2">
+                <Database className="h-5 w-5" />
+                View Evidence Locker
+              </Button>
+            </Link>
 
-          <Link
-            href={`/projects/${projectId}/settings`}
-            className="px-4 py-3 text-sm font-medium text-center text-gray-700 hover:bg-gray-50 rounded-lg border border-gray-300"
-          >
-            ⚙️ Project Settings
-          </Link>
-        </div>
-      </div>
+            <Link href={`/projects/${projectId}/settings`}>
+              <Button variant="outline" size="lg" className="w-full gap-2">
+                <Settings className="h-5 w-5" />
+                Project Settings
+              </Button>
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
