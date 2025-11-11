@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { createClient } from '@/lib/supabase/client'
 
 export default function NewProjectPage() {
@@ -12,6 +14,8 @@ export default function NewProjectPage() {
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     title: '',
+    product_type: 'innovator' as 'innovator' | 'generic' | 'hybrid',
+    compound_name: '',
     phase: 'Phase 2',
     indication: '',
     drug_class: '',
@@ -21,6 +25,10 @@ export default function NewProjectPage() {
     arms: '2',
     duration_weeks: '24',
     primary_endpoint: '',
+    // Generic-specific fields
+    rld_brand_name: '',
+    rld_application_number: '',
+    rld_te_code: '',
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -61,11 +69,14 @@ export default function NewProjectPage() {
         .from('projects')
         .insert({
           title: formData.title,
+          product_type: formData.product_type,
           phase: formData.phase,
           indication: formData.indication,
           drug_class: formData.drug_class || null,
           countries: countriesArray,
           design_json: designJson,
+          rld_application_number: formData.product_type === 'generic' ? formData.rld_application_number : null,
+          te_code: formData.product_type === 'generic' ? formData.rld_te_code : null,
           org_id: userData?.org_id,
           created_by: user.id,
         })
@@ -99,6 +110,54 @@ export default function NewProjectPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
+            {/* Product Type Selection */}
+            <div className="space-y-4 pb-6 border-b">
+              <div>
+                <Label className="text-base font-semibold">Product Type *</Label>
+                <p className="text-sm text-gray-500 mt-1">Select the type of product for this project</p>
+              </div>
+              <RadioGroup
+                value={formData.product_type}
+                onValueChange={(value: 'innovator' | 'generic' | 'hybrid') => 
+                  setFormData({ ...formData, product_type: value })
+                }
+              >
+                <div className="flex items-start space-x-3 p-4 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                  <RadioGroupItem value="innovator" id="innovator" className="mt-1" />
+                  <div className="flex-1">
+                    <Label htmlFor="innovator" className="cursor-pointer">
+                      <div className="font-semibold text-gray-900">Innovator / Original Compound</div>
+                      <p className="text-sm text-gray-500 mt-1">
+                        New drug with full nonclinical and clinical data from sponsor
+                      </p>
+                    </Label>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3 p-4 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                  <RadioGroupItem value="generic" id="generic" className="mt-1" />
+                  <div className="flex-1">
+                    <Label htmlFor="generic" className="cursor-pointer">
+                      <div className="font-semibold text-gray-900">Generic Drug</div>
+                      <p className="text-sm text-gray-500 mt-1">
+                        Based on existing approved product (RLD) — we'll auto-fetch data from FDA/EMA
+                      </p>
+                    </Label>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3 p-4 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                  <RadioGroupItem value="hybrid" id="hybrid" className="mt-1" />
+                  <div className="flex-1">
+                    <Label htmlFor="hybrid" className="cursor-pointer">
+                      <div className="font-semibold text-gray-900">Hybrid / Combination Product</div>
+                      <p className="text-sm text-gray-500 mt-1">
+                        Modified release, fixed-dose combination, or biosimilar
+                      </p>
+                    </Label>
+                  </div>
+                </div>
+              </RadioGroup>
+            </div>
+
             {/* Title */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -111,6 +170,83 @@ export default function NewProjectPage() {
                 placeholder="e.g., AST-101 Phase 2 Trial"
               />
             </div>
+
+            {/* Compound Name */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Compound / Drug Name *
+              </label>
+              <Input
+                required
+                value={formData.compound_name}
+                onChange={(e) => setFormData({ ...formData, compound_name: e.target.value })}
+                placeholder={formData.product_type === 'generic' ? 'e.g., Metformin Hydrochloride' : 'e.g., AST-256'}
+              />
+              {formData.product_type === 'generic' && (
+                <p className="mt-1 text-xs text-gray-500">
+                  💡 Use the generic name (e.g., Metformin Hydrochloride, not Glucophage)
+                </p>
+              )}
+            </div>
+
+            {/* Generic-specific: RLD Information */}
+            {formData.product_type === 'generic' && (
+              <Card className="bg-blue-50 border-blue-200">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base">Reference Listed Drug (RLD) Information</CardTitle>
+                  <CardDescription>
+                    We'll automatically fetch nonclinical and clinical data from FDA/EMA databases
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      RLD Brand Name *
+                    </label>
+                    <Input
+                      required={formData.product_type === 'generic'}
+                      value={formData.rld_brand_name}
+                      onChange={(e) => setFormData({ ...formData, rld_brand_name: e.target.value })}
+                      placeholder="e.g., GLUCOPHAGE"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Application Number *
+                    </label>
+                    <Input
+                      required={formData.product_type === 'generic'}
+                      value={formData.rld_application_number}
+                      onChange={(e) => setFormData({ ...formData, rld_application_number: e.target.value })}
+                      placeholder="e.g., NDA020357"
+                    />
+                    <p className="mt-1 text-xs text-gray-500">
+                      Find this on FDA Orange Book or Drugs@FDA
+                    </p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      TE Code (Optional)
+                    </label>
+                    <Input
+                      value={formData.rld_te_code}
+                      onChange={(e) => setFormData({ ...formData, rld_te_code: e.target.value })}
+                      placeholder="e.g., AB"
+                      maxLength={2}
+                    />
+                    <p className="mt-1 text-xs text-gray-500">
+                      Therapeutic Equivalence code (AB = bioequivalent)
+                    </p>
+                  </div>
+                  <div className="bg-white border border-blue-300 rounded-md p-3">
+                    <p className="text-sm text-blue-900">
+                      <strong>🤖 Auto-enrichment enabled:</strong> We'll fetch pharmacology, PK/PD, safety data, 
+                      and references from FDA labels, EMA EPAR, and PubMed.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Phase */}
             <div>
