@@ -39,22 +39,25 @@ Implement Week 1 tasks from WEEK_1_ACTION_PLAN.md:
   - `/lib/types/project.ts` - Project, EnrichmentMetadata, helper functions
   - `/lib/types/regulatory-data.ts` - 20+ interfaces for regulatory data
 
-### ⏳ In Progress
+### ✅ Completed (continued)
 
 #### Day 1 (Nov 11) - Intake Agent
-- [ ] Create API Route: `/api/v1/intake`
-- [ ] Implement form validation
-- [ ] Determine enabled agents based on product_type
-- [ ] Create project record in database
-- [ ] Trigger Regulatory Data Agent (if needed)
+- [x] Create API Route: `/api/v1/intake`
+- [x] Implement form validation
+- [x] Determine enabled agents based on product_type
+- [x] Create project record in database
+- [x] Trigger Regulatory Data Agent (if needed)
+- [x] Update project creation form to use Intake API
 
-### 📋 Pending
+### ⏳ In Progress
 
-#### Day 2 (Nov 12) - PubChem Resolver
+#### Day 1-2 (Nov 11-12) - PubChem Resolver
 - [ ] Create PubChem adapter
 - [ ] Implement compound name → InChIKey resolution
 - [ ] Store in compounds table
 - [ ] Test with Metformin Hydrochloride
+
+### 📋 Pending
 
 #### Day 3 (Nov 13) - Template Engine
 - [ ] Install Handlebars

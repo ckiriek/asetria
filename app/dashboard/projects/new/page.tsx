@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { createClient } from '@/lib/supabase/client'
 
 export default function NewProjectPage() {
   const router = useRouter()
@@ -36,22 +35,6 @@ export default function NewProjectPage() {
     setLoading(true)
 
     try {
-      const supabase = createClient()
-
-      // Get current user
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) {
-        alert('Please log in to create a project')
-        return
-      }
-
-      // Get user's org_id
-      const { data: userData } = await supabase
-        .from('users')
-        .select('org_id')
-        .eq('id', user.id)
-        .single()
-
       const countriesArray = formData.countries
         .split(',')
         .map(c => c.trim())
@@ -65,27 +48,38 @@ export default function NewProjectPage() {
         primary_endpoint: formData.primary_endpoint,
       }
 
-      const { data, error } = await supabase
-        .from('projects')
-        .insert({
+      // Call Intake Agent API
+      const response = await fetch('/api/v1/intake', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           title: formData.title,
           product_type: formData.product_type,
+          compound_name: formData.compound_name,
           phase: formData.phase,
           indication: formData.indication,
-          drug_class: formData.drug_class || null,
+          drug_class: formData.drug_class || undefined,
           countries: countriesArray,
           design_json: designJson,
-          rld_application_number: formData.product_type === 'generic' ? formData.rld_application_number : null,
-          te_code: formData.product_type === 'generic' ? formData.rld_te_code : null,
-          org_id: userData?.org_id,
-          created_by: user.id,
-        })
-        .select()
-        .single()
+          rld_brand_name: formData.product_type === 'generic' ? formData.rld_brand_name : undefined,
+          rld_application_number: formData.product_type === 'generic' ? formData.rld_application_number : undefined,
+          te_code: formData.product_type === 'generic' ? formData.rld_te_code : undefined,
+        }),
+      })
 
-      if (error) throw error
+      const result = await response.json()
 
-      router.push(`/dashboard/projects/${data.id}`)
+      if (!result.success) {
+        alert(result.errors?.join('\n') || 'Failed to create project')
+        return
+      }
+
+      // Show success message
+      if (result.enrichment_triggered) {
+        alert('✅ Project created! Regulatory data enrichment started in background.')
+      }
+
+      router.push(`/dashboard/projects/${result.project_id}`)
     } catch (error) {
       console.error('Error creating project:', error)
       alert('Failed to create project. Please try again.')
