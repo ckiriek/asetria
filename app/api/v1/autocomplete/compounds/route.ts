@@ -45,14 +45,18 @@ export async function GET(request: NextRequest) {
 
     // Search PubChem
     try {
+      console.log('🔬 Searching PubChem for:', query)
       const pubchem = new PubChemAdapter()
       const searchResults = await pubchem.searchCompounds(query!, limit)
+      console.log('🔬 PubChem search results:', searchResults.length, searchResults)
       
       // Fetch full compound data for each result
       for (const result of searchResults.slice(0, 5)) { // Limit to 5 to avoid rate limiting
         try {
+          console.log('🔬 Fetching compound details for:', result.name)
           const compound = await pubchem.fetchCompound(result.name)
           if (compound) {
+            console.log('✅ PubChem compound found:', compound.name)
             results.push({
               name: compound.name,
               source: 'pubchem',
@@ -62,28 +66,34 @@ export async function GET(request: NextRequest) {
           }
         } catch (err) {
           // Skip compounds that fail to fetch
-          console.error(`Failed to fetch compound ${result.name}:`, err)
+          console.error(`❌ Failed to fetch compound ${result.name}:`, err)
         }
       }
     } catch (error) {
-      console.error('PubChem search error:', error)
+      console.error('❌ PubChem search error:', error)
     }
 
     // Search DailyMed (drug names)
     try {
+      console.log('💊 Searching DailyMed for:', query)
       const dailymed = new DailyMedAdapter()
       const dailymedResults = await dailymed.searchByDrugName(query!)
+      console.log('💊 DailyMed search results (setids):', dailymedResults.length, dailymedResults)
       
       // DailyMed returns setids, fetch titles directly from API
       for (const setid of dailymedResults.slice(0, 5)) {
         try {
+          console.log('💊 Fetching DailyMed SPL for setid:', setid)
           // Fetch SPL data directly to get title
           const response = await fetch(`https://dailymed.nlm.nih.gov/dailymed/services/v2/spls/${setid}.json`)
+          console.log('💊 DailyMed API response status:', response.status)
+          
           if (response.ok) {
             const data = await response.json()
             if (data.data && data.data.title) {
               // Extract drug name from title (usually first part before dash or parenthesis)
               const drugName = data.data.title.split(/[-\(]/)[0].trim()
+              console.log('✅ DailyMed drug found:', drugName, 'from title:', data.data.title)
               
               // Only add if not already in results
               if (!results.find(r => r.name.toLowerCase() === drugName.toLowerCase())) {
@@ -95,11 +105,11 @@ export async function GET(request: NextRequest) {
             }
           }
         } catch (err) {
-          console.error(`Failed to fetch DailyMed SPL ${setid}:`, err)
+          console.error(`❌ Failed to fetch DailyMed SPL ${setid}:`, err)
         }
       }
     } catch (error) {
-      console.error('DailyMed search error:', error)
+      console.error('❌ DailyMed search error:', error)
     }
 
     // Remove duplicates and limit
