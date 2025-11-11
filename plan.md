@@ -49,13 +49,26 @@ Implement Week 1 tasks from WEEK_1_ACTION_PLAN.md:
 - [x] Trigger Regulatory Data Agent (if needed)
 - [x] Update project creation form to use Intake API
 
+### ✅ Completed (continued)
+
+#### Day 1 (Nov 11 Afternoon) - PubChem Adapter & Enrichment Pipeline
+- [x] Create PubChem adapter with rate limiting
+- [x] Implement compound name → InChIKey resolution
+- [x] Implement full compound data fetching
+- [x] Create Enrichment API Route (`/api/v1/enrich`)
+- [x] Create Edge Function (`enrich-data`)
+- [x] Store in compounds table (upsert)
+- [x] Update project with inchikey and enrichment_status
+- [x] Log to ingestion_logs
+- [x] Create test script for PubChem adapter
+
 ### ⏳ In Progress
 
-#### Day 1-2 (Nov 11-12) - PubChem Resolver
-- [ ] Create PubChem adapter
-- [ ] Implement compound name → InChIKey resolution
-- [ ] Store in compounds table
-- [ ] Test with Metformin Hydrochloride
+#### Day 1-2 (Nov 11-12) - Testing & Next Adapters
+- [ ] Test end-to-end enrichment flow
+- [ ] Verify database operations
+- [ ] Add openFDA adapter (labels)
+- [ ] Add DailyMed adapter (current labels)
 
 ### 📋 Pending
 
