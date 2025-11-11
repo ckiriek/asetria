@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { FieldAutocomplete } from '@/components/forms/field-autocomplete'
 
 export default function NewProjectPage() {
   const router = useRouter()
@@ -170,11 +171,12 @@ export default function NewProjectPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Compound / Drug Name *
               </label>
-              <Input
-                required
+              <FieldAutocomplete
                 value={formData.compound_name}
-                onChange={(e) => setFormData({ ...formData, compound_name: e.target.value })}
+                onChange={(value) => setFormData({ ...formData, compound_name: value })}
+                endpoint="/api/v1/autocomplete/compounds"
                 placeholder={formData.product_type === 'generic' ? 'e.g., Metformin Hydrochloride' : 'e.g., AST-256'}
+                required
               />
               {formData.product_type === 'generic' && (
                 <p className="mt-1 text-xs text-gray-500">
@@ -197,22 +199,24 @@ export default function NewProjectPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       RLD Brand Name *
                     </label>
-                    <Input
-                      required={formData.product_type === 'generic'}
+                    <FieldAutocomplete
                       value={formData.rld_brand_name}
-                      onChange={(e) => setFormData({ ...formData, rld_brand_name: e.target.value })}
+                      onChange={(value) => setFormData({ ...formData, rld_brand_name: value })}
+                      endpoint="/api/v1/autocomplete/rld?type=brand"
                       placeholder="e.g., GLUCOPHAGE"
+                      required={formData.product_type === 'generic'}
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Application Number *
                     </label>
-                    <Input
-                      required={formData.product_type === 'generic'}
+                    <FieldAutocomplete
                       value={formData.rld_application_number}
-                      onChange={(e) => setFormData({ ...formData, rld_application_number: e.target.value })}
+                      onChange={(value) => setFormData({ ...formData, rld_application_number: value })}
+                      endpoint="/api/v1/autocomplete/rld?type=application"
                       placeholder="e.g., NDA020357"
+                      required={formData.product_type === 'generic'}
                     />
                     <p className="mt-1 text-xs text-gray-500">
                       Find this on FDA Orange Book or Drugs@FDA
@@ -265,11 +269,12 @@ export default function NewProjectPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Indication *
               </label>
-              <Input
-                required
+              <FieldAutocomplete
                 value={formData.indication}
-                onChange={(e) => setFormData({ ...formData, indication: e.target.value })}
+                onChange={(value) => setFormData({ ...formData, indication: value })}
+                endpoint="/api/v1/autocomplete/indications"
                 placeholder="e.g., Type 2 Diabetes"
+                required
               />
             </div>
 
@@ -293,11 +298,16 @@ export default function NewProjectPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Countries
               </label>
-              <Input
+              <FieldAutocomplete
                 value={formData.countries}
-                onChange={(e) => setFormData({ ...formData, countries: e.target.value })}
+                onChange={(value) => setFormData({ ...formData, countries: value })}
+                endpoint="/api/v1/autocomplete/countries"
                 placeholder="e.g., USA, Germany, Japan (comma-separated)"
+                minChars={2}
               />
+              <p className="mt-1 text-xs text-gray-500">
+                💡 Type to search, select multiple countries separated by commas
+              </p>
             </div>
 
             {/* Study Design */}
