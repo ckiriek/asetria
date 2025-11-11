@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
       // Fetch full compound data for each result
       for (const result of searchResults.slice(0, 5)) { // Limit to 5 to avoid rate limiting
         try {
-          const compound = await pubchem.getCompoundByCID(result.cid)
+          const compound = await pubchem.fetchCompound(result.name)
           if (compound) {
             results.push({
               name: compound.name,
@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
           }
         } catch (err) {
           // Skip compounds that fail to fetch
-          console.error(`Failed to fetch compound ${result.cid}:`, err)
+          console.error(`Failed to fetch compound ${result.name}:`, err)
         }
       }
     } catch (error) {
