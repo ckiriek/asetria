@@ -3,7 +3,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { EmptyState } from '@/components/ui/empty-state'
 import Link from 'next/link'
 import { Plus, FolderOpen, FileText, Calendar, MapPin } from 'lucide-react'
 
@@ -93,15 +92,19 @@ export default async function ProjectsPage() {
           ))}
         </div>
       ) : (
-        <EmptyState
-          icon={<FolderOpen className="h-12 w-12" />}
-          title="No projects yet"
-          description="Create your first clinical trial project to start generating regulatory documents"
-          action={{
-            label: 'Create Project',
-            onClick: () => window.location.href = '/dashboard/projects/new'
-          }}
-        />
+        <div className="text-center py-12">
+          <FolderOpen className="mx-auto h-16 w-16 text-muted-foreground mb-4" />
+          <h3 className="text-lg font-semibold mb-2">No projects yet</h3>
+          <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+            Create your first clinical trial project to start generating regulatory documents
+          </p>
+          <Link href="/dashboard/projects/new">
+            <Button size="lg">
+              <Plus className="h-4 w-4 mr-2" />
+              Create Project
+            </Button>
+          </Link>
+        </div>
       )}
     </div>
   )

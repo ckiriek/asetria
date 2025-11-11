@@ -4,7 +4,6 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Progress } from '@/components/ui/progress'
-import { EmptyState } from '@/components/ui/empty-state'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Download, CheckCircle, FileText, Calendar, Info } from 'lucide-react'
@@ -184,15 +183,18 @@ export default async function DocumentPage({ params }: { params: { id: string } 
           documentType={document.type}
         />
       ) : (
-        <EmptyState
-          icon={<FileText className="h-12 w-12" />}
-          title="No content generated yet"
-          description="Click 'Generate Document' on the project page to create content using AI."
-          action={{
-            label: 'Go to Project',
-            onClick: () => window.location.href = `/dashboard/projects/${(document as any).project_id}`
-          }}
-        />
+        <Card>
+          <CardContent className="text-center py-12">
+            <FileText className="mx-auto h-16 w-16 text-muted-foreground mb-4" />
+            <h3 className="text-lg font-semibold mb-2">No content generated yet</h3>
+            <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+              Click 'Generate Document' on the project page to create content using AI.
+            </p>
+            <Link href={`/dashboard/projects/${(document as any).project_id}`}>
+              <Button>Go to Project</Button>
+            </Link>
+          </CardContent>
+        </Card>
       )}
 
       {/* Validation Results */}
@@ -278,11 +280,13 @@ export default async function DocumentPage({ params }: { params: { id: string } 
               </p>
             </div>
           ) : (
-            <EmptyState
-              icon={<CheckCircle className="h-12 w-12" />}
-              title="No validation results yet"
-              description="Click 'Validate' to check document compliance with ICH/FDA guidelines"
-            />
+            <div className="text-center py-12">
+              <CheckCircle className="mx-auto h-16 w-16 text-muted-foreground mb-4" />
+              <h3 className="text-lg font-semibold mb-2">No validation results yet</h3>
+              <p className="text-muted-foreground">
+                Click 'Validate' to check document compliance with ICH/FDA guidelines
+              </p>
+            </div>
           )}
         </CardContent>
       </Card>
