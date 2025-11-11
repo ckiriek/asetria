@@ -117,12 +117,13 @@ export function FieldAutocomplete({
 
   const defaultRenderSuggestion = (item: any) => {
     // Compounds
-    if (item.name && item.molecular_formula) {
+    if (item.name && item.source) {
       return (
         <div>
-          <div className="font-medium text-sm">{item.name}</div>
-          <div className="text-xs text-gray-500">
-            {item.molecular_formula} • {item.source}
+          <div className="font-semibold text-sm text-gray-900">{item.name}</div>
+          <div className="text-xs text-muted-foreground mt-0.5">
+            {item.molecular_formula && `${item.molecular_formula} • `}
+            <span className="capitalize">{item.source}</span>
           </div>
         </div>
       )
@@ -132,8 +133,8 @@ export function FieldAutocomplete({
     if (item.brand_name && item.application_number) {
       return (
         <div>
-          <div className="font-medium text-sm">{item.brand_name}</div>
-          <div className="text-xs text-gray-500">
+          <div className="font-semibold text-sm text-gray-900">{item.brand_name}</div>
+          <div className="text-xs text-muted-foreground mt-0.5">
             {item.application_number} • {item.generic_name || 'RLD'}
             {item.te_code && ` • TE: ${item.te_code}`}
           </div>
@@ -145,9 +146,9 @@ export function FieldAutocomplete({
     if (item.indication) {
       return (
         <div>
-          <div className="text-sm">{item.indication}</div>
+          <div className="text-sm text-gray-900">{item.indication}</div>
           {item.count && (
-            <div className="text-xs text-gray-500">
+            <div className="text-xs text-muted-foreground mt-0.5">
               {item.count} project{item.count > 1 ? 's' : ''}
             </div>
           )}
@@ -157,11 +158,25 @@ export function FieldAutocomplete({
 
     // Countries
     if (item.country) {
-      return <div className="text-sm">{item.country}</div>
+      return <div className="text-sm text-gray-900">{item.country}</div>
     }
 
-    // Fallback
-    return <div className="text-sm">{JSON.stringify(item)}</div>
+    // Fallback - show name if exists
+    if (item.name) {
+      return (
+        <div>
+          <div className="font-semibold text-sm text-gray-900">{item.name}</div>
+          {item.source && (
+            <div className="text-xs text-muted-foreground mt-0.5 capitalize">
+              {item.source}
+            </div>
+          )}
+        </div>
+      )
+    }
+
+    // Last resort fallback
+    return <div className="text-sm text-gray-500">No preview available</div>
   }
 
   return (
@@ -184,15 +199,16 @@ export function FieldAutocomplete({
 
       {/* Suggestions Dropdown */}
       {isOpen && suggestions.length > 0 && (
-        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-64 overflow-y-auto">
+        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-xl max-h-64 overflow-y-auto">
           {suggestions.map((item, index) => (
             <button
               key={index}
               type="button"
               onClick={() => handleSelect(item)}
+              onMouseEnter={() => setSelectedIndex(index)}
               className={`
-                w-full text-left px-3 py-2 hover:bg-blue-50 transition-colors
-                ${selectedIndex === index ? 'bg-blue-50' : ''}
+                w-full text-left px-4 py-3 hover:bg-primary/10 transition-colors border-b last:border-b-0 cursor-pointer
+                ${selectedIndex === index ? 'bg-primary/10' : ''}
               `}
             >
               {renderSuggestion ? renderSuggestion(item) : defaultRenderSuggestion(item)}
