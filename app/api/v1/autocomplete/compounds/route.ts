@@ -43,15 +43,24 @@ export async function GET(request: NextRequest) {
     // Search PubChem
     try {
       const pubchem = new PubChemAdapter()
-      const pubchemResults = await pubchem.searchCompoundsByName(query!, limit)
+      const searchResults = await pubchem.searchCompounds(query!, limit)
       
-      for (const compound of pubchemResults) {
-        results.push({
-          name: compound.name,
-          source: 'pubchem',
-          molecular_formula: compound.molecular_formula,
-          inchikey: compound.inchikey
-        })
+      // Fetch full compound data for each result
+      for (const result of searchResults.slice(0, 5)) { // Limit to 5 to avoid rate limiting
+        try {
+          const compound = await pubchem.getCompoundByCID(result.cid)
+          if (compound) {
+            results.push({
+              name: compound.name,
+              source: 'pubchem',
+              molecular_formula: compound.molecular_formula,
+              inchikey: compound.inchikey
+            })
+          }
+        } catch (err) {
+          // Skip compounds that fail to fetch
+          console.error(`Failed to fetch compound ${result.cid}:`, err)
+        }
       }
     } catch (error) {
       console.error('PubChem search error:', error)
