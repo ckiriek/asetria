@@ -1,0 +1,472 @@
+{{!--
+  Investigator's Brochure - Generic Product
+  Section 8: Marketed Experience
+  
+  Template for ICH E6 (R2) compliant IB Section 8
+  
+  Data Sources:
+  - adverse_events (post-marketing data)
+  - label (warnings, precautions)
+  - literature (post-marketing studies)
+  
+  Variables:
+  - compound_name: string
+  - generic_name: string
+  - rld_brand_name: string
+  - product_type: string
+  - adverse_events: AdverseEvent[]
+  - label: Label
+  - literature: Literature[]
+--}}
+
+# 8. MARKETED EXPERIENCE
+
+## 8.1 Overview
+
+{{#if eq product_type "generic"}}
+{{compound_name}} is a generic formulation bioequivalent to the Reference Listed Drug (RLD) {{rld_brand_name}}. The marketed experience described in this section is based on the RLD's post-marketing surveillance data, as generic products share the same safety profile as their reference products when bioequivalence has been demonstrated.
+{{else}}
+{{compound_name}} has been marketed for {{#if label.approval_date}}{{yearsince label.approval_date}} years{{else}}[duration]{{/if}}. This section summarizes the post-marketing experience, including adverse events, safety signals, and real-world evidence accumulated since market approval.
+{{/if}}
+
+---
+
+## 8.2 Marketing History
+
+### 8.2.1 Approval and Launch
+
+{{#if label}}
+**Initial FDA Approval:** {{#if label.approval_date}}{{date label.approval_date "YYYY-MM-DD"}}{{else}}[Approval date]{{/if}}
+
+**Application Number:** {{#if label.application_number}}{{label.application_number}}{{else}}[Application number]{{/if}}
+
+**Marketing Status:** {{#if label.marketing_status}}{{capitalize label.marketing_status}}{{else}}Actively marketed{{/if}}
+{{else}}
+**Initial FDA Approval:** [Approval date]
+
+**Application Number:** [Application number]
+
+**Marketing Status:** [Status]
+{{/if}}
+
+### 8.2.2 Geographic Distribution
+
+{{#if label.international_approvals}}
+**Markets:** {{compound_name}} is approved and marketed in the following regions:
+
+{{#each label.international_approvals}}
+- **{{this.region}}:** {{this.status}}{{#if this.approval_date}} (Since {{date this.approval_date "YYYY"}}){{/if}}
+{{/each}}
+{{else}}
+**Markets:** [List countries/regions where product is marketed]
+{{/if}}
+
+### 8.2.3 Patient Exposure
+
+{{#if label.patient_exposure}}
+**Estimated Patient Exposure:** {{label.patient_exposure}}
+
+**Prescription Volume:** {{#if label.prescription_volume}}{{label.prescription_volume}}{{else}}[Volume data]{{/if}}
+{{else}}
+**Estimated Patient Exposure:** [Number of patients exposed since approval]
+
+**Prescription Volume:** [Annual prescription data]
+{{/if}}
+
+---
+
+## 8.3 Post-Marketing Adverse Events
+
+### 8.3.1 Adverse Event Reporting
+
+{{#if adverse_events}}
+Post-marketing surveillance has identified the following adverse events reported in association with {{compound_name}} use:
+
+**Total Reports:** {{length adverse_events}} adverse event types documented
+
+**Data Source:** FDA Adverse Event Reporting System (FAERS){{#if label.source}}, {{label.source}}{{/if}}
+
+**Reporting Period:** {{#if adverse_events.[0].report_date}}Since {{date adverse_events.[0].report_date "YYYY"}}{{else}}[Period]{{/if}}
+{{else}}
+Post-marketing adverse event data is derived from spontaneous reporting systems and post-marketing studies.
+
+[Summarize adverse event reporting system and data sources]
+{{/if}}
+
+### 8.3.2 Common Adverse Events
+
+{{#if adverse_events}}
+The following adverse events have been reported with the highest frequency:
+
+| Adverse Event | Incidence | Severity | Outcome |
+|---------------|-----------|----------|---------|
+{{#each adverse_events}}
+{{#if lte @index 9}}
+| {{this.event_name}} | {{#if this.incidence_pct}}{{decimal this.incidence_pct 2}}%{{else}}[Rate]{{/if}} | {{#if this.severity}}{{capitalize this.severity}}{{else}}[Severity]{{/if}} | {{#if this.outcome}}{{this.outcome}}{{else}}[Outcome]{{/if}} |
+{{/if}}
+{{/each}}
+
+**Note:** Incidence rates are based on spontaneous reporting and may not reflect true population incidence.
+{{else}}
+[Provide table of most commonly reported adverse events with incidence rates, severity, and outcomes]
+{{/if}}
+
+### 8.3.3 Serious Adverse Events
+
+{{#if adverse_events}}
+**Serious Adverse Events (SAEs):**
+
+{{#each adverse_events}}
+{{#if eq this.serious true}}
+- **{{this.event_name}}:** {{#if this.description}}{{this.description}}{{else}}[Description]{{/if}}
+  - Incidence: {{#if this.incidence_pct}}{{decimal this.incidence_pct 2}}%{{else}}[Rate]{{/if}}
+  - Outcome: {{#if this.outcome}}{{this.outcome}}{{else}}[Outcome]{{/if}}
+  - Causality: {{#if this.causality}}{{this.causality}}{{else}}[Assessment]{{/if}}
+
+{{/if}}
+{{/each}}
+{{else}}
+[Describe serious adverse events reported post-marketing, including:
+- Event description
+- Incidence rate
+- Outcomes
+- Causality assessment]
+{{/if}}
+
+### 8.3.4 Adverse Events of Special Interest
+
+{{#if label.sections.warnings_and_precautions}}
+**Warnings and Precautions:**
+
+{{label.sections.warnings_and_precautions}}
+{{else}}
+[Describe adverse events of special interest that have emerged from post-marketing experience]
+
+**Categories:**
+- Cardiovascular events
+- Hepatotoxicity
+- Hypersensitivity reactions
+- Drug interactions
+- Special populations
+{{/if}}
+
+---
+
+## 8.4 Safety Signals and Label Updates
+
+### 8.4.1 Post-Marketing Safety Signals
+
+{{#if label.safety_updates}}
+**Safety Signals Identified:**
+
+{{#each label.safety_updates}}
+- **{{this.signal}}** ({{date this.date "YYYY-MM-DD"}})
+  - Description: {{this.description}}
+  - Action Taken: {{this.action}}
+{{/each}}
+{{else}}
+[Describe any safety signals identified through post-marketing surveillance]
+
+**Signal Detection Methods:**
+- Spontaneous reporting analysis
+- Data mining
+- Literature review
+- Regulatory authority communications
+{{/if}}
+
+### 8.4.2 Label Changes
+
+{{#if label.label_changes}}
+**Significant Label Updates:**
+
+{{#each label.label_changes}}
+- **{{date this.date "YYYY-MM-DD"}}:** {{this.change_description}}
+  - Section Affected: {{this.section}}
+  - Reason: {{this.reason}}
+{{/each}}
+{{else}}
+[Describe significant label changes made based on post-marketing data]
+
+**Types of Changes:**
+- New warnings or precautions
+- Contraindications
+- Dosing modifications
+- Drug interaction updates
+- Special population information
+{{/if}}
+
+### 8.4.3 Regulatory Actions
+
+{{#if label.regulatory_actions}}
+**Regulatory Actions Taken:**
+
+{{#each label.regulatory_actions}}
+- **{{this.action_type}}** ({{date this.date "YYYY-MM-DD"}})
+  - Authority: {{this.authority}}
+  - Description: {{this.description}}
+  - Impact: {{this.impact}}
+{{/each}}
+{{else}}
+[Describe any regulatory actions taken based on post-marketing data]
+
+**Potential Actions:**
+- Safety communications
+- Risk Evaluation and Mitigation Strategies (REMS)
+- Market withdrawals
+- Use restrictions
+{{/if}}
+
+---
+
+## 8.5 Post-Marketing Studies
+
+### 8.5.1 Phase 4 Studies
+
+{{#if literature}}
+**Post-Approval Studies:**
+
+{{#each literature}}
+{{#if eq this.study_phase "Phase 4"}}
+**Study:** {{this.title}}
+
+- **Authors:** {{join this.authors ", "}}
+- **Journal:** {{this.journal}}{{#if this.publication_date}} ({{this.publication_date}}){{/if}}
+- **PMID:** {{this.pmid}}
+- **Key Findings:** {{#if this.abstract}}{{truncate this.abstract 200}}{{else}}[Summary]{{/if}}
+
+{{/if}}
+{{/each}}
+{{else}}
+[Describe Phase 4 post-marketing studies conducted]
+
+**Study Types:**
+- Long-term safety studies
+- Real-world effectiveness studies
+- Special population studies
+- Drug interaction studies
+{{/if}}
+
+### 8.5.2 Observational Studies
+
+{{#if literature}}
+**Real-World Evidence:**
+
+{{#each literature}}
+{{#if includes this.keywords "observational"}}
+**Study:** {{this.title}}
+
+- **Design:** {{#if this.study_design}}{{this.study_design}}{{else}}Observational{{/if}}
+- **Population:** {{#if this.population_size}}N={{this.population_size}}{{else}}[Size]{{/if}}
+- **Duration:** {{#if this.follow_up}}{{this.follow_up}}{{else}}[Duration]{{/if}}
+- **Findings:** {{#if this.abstract}}{{truncate this.abstract 150}}{{else}}[Summary]{{/if}}
+
+{{/if}}
+{{/each}}
+{{else}}
+[Describe observational studies and real-world evidence]
+
+**Data Sources:**
+- Electronic health records
+- Claims databases
+- Patient registries
+- Pharmacovigilance databases
+{{/if}}
+
+---
+
+## 8.6 Special Populations
+
+### 8.6.1 Pediatric Experience
+
+{{#if label.sections.pediatric_use}}
+{{label.sections.pediatric_use}}
+{{else}}
+[Describe post-marketing experience in pediatric populations]
+
+**Considerations:**
+- Safety profile
+- Dosing adjustments
+- Efficacy observations
+- Adverse events
+{{/if}}
+
+### 8.6.2 Geriatric Experience
+
+{{#if label.sections.geriatric_use}}
+{{label.sections.geriatric_use}}
+{{else}}
+[Describe post-marketing experience in geriatric populations]
+
+**Considerations:**
+- Safety profile
+- Dose adjustments
+- Drug interactions
+- Adverse events
+{{/if}}
+
+### 8.6.3 Pregnancy and Lactation
+
+{{#if label.sections.pregnancy}}
+{{label.sections.pregnancy}}
+{{else}}
+[Describe post-marketing experience in pregnancy and lactation]
+
+**Pregnancy:**
+- Exposure data
+- Outcomes
+- Risk assessment
+
+**Lactation:**
+- Excretion in breast milk
+- Effects on nursing infant
+- Recommendations
+{{/if}}
+
+### 8.6.4 Renal and Hepatic Impairment
+
+{{#if label.sections.renal_impairment}}
+**Renal Impairment:**
+{{label.sections.renal_impairment}}
+{{else}}
+**Renal Impairment:** [Describe experience in patients with renal impairment]
+{{/if}}
+
+{{#if label.sections.hepatic_impairment}}
+**Hepatic Impairment:**
+{{label.sections.hepatic_impairment}}
+{{else}}
+**Hepatic Impairment:** [Describe experience in patients with hepatic impairment]
+{{/if}}
+
+---
+
+## 8.7 Drug Interactions
+
+### 8.7.1 Post-Marketing Drug Interaction Reports
+
+{{#if adverse_events}}
+**Reported Drug Interactions:**
+
+{{#each adverse_events}}
+{{#if this.drug_interaction}}
+- **{{this.interacting_drug}}:** {{this.interaction_description}}
+  - Severity: {{#if this.severity}}{{capitalize this.severity}}{{else}}[Severity]{{/if}}
+  - Management: {{#if this.management}}{{this.management}}{{else}}[Recommendations]{{/if}}
+
+{{/if}}
+{{/each}}
+{{else}}
+[Describe drug interactions identified through post-marketing surveillance]
+{{/if}}
+
+### 8.7.2 Clinically Significant Interactions
+
+{{#if label.sections.drug_interactions}}
+{{label.sections.drug_interactions}}
+{{else}}
+[Describe clinically significant drug interactions]
+
+**Categories:**
+- Pharmacokinetic interactions
+- Pharmacodynamic interactions
+- Contraindicated combinations
+- Dose adjustment requirements
+{{/if}}
+
+---
+
+## 8.8 Medication Errors
+
+{{#if label.medication_errors}}
+**Reported Medication Errors:**
+
+{{#each label.medication_errors}}
+- **Error Type:** {{this.error_type}}
+  - Description: {{this.description}}
+  - Prevention: {{this.prevention_strategy}}
+{{/each}}
+{{else}}
+[Describe medication errors reported post-marketing]
+
+**Common Error Types:**
+- Dosing errors
+- Administration errors
+- Dispensing errors
+- Look-alike/sound-alike issues
+{{/if}}
+
+---
+
+## 8.9 Risk Management
+
+### 8.9.1 Risk Minimization Measures
+
+{{#if label.risk_management}}
+{{label.risk_management}}
+{{else}}
+[Describe risk minimization measures implemented]
+
+**Measures:**
+- Prescriber education
+- Patient information materials
+- Restricted distribution programs
+- Monitoring requirements
+{{/if}}
+
+### 8.9.2 REMS (Risk Evaluation and Mitigation Strategy)
+
+{{#if label.rems}}
+**REMS Status:** {{label.rems.status}}
+
+**REMS Components:**
+{{#each label.rems.components}}
+- {{this}}
+{{/each}}
+{{else}}
+**REMS Status:** {{#if label.has_rems}}Active{{else}}Not required{{/if}}
+
+[Describe REMS if applicable]
+{{/if}}
+
+---
+
+## 8.10 Summary
+
+{{#if eq product_type "generic"}}
+The marketed experience with {{compound_name}} is based on the extensive post-marketing data for the RLD {{rld_brand_name}}. As a bioequivalent generic product, {{compound_name}} is expected to have the same safety and efficacy profile as the RLD.
+{{else}}
+{{compound_name}} has been marketed for {{#if label.approval_date}}{{yearsince label.approval_date}} years{{else}}[duration]{{/if}}, with {{#if label.patient_exposure}}{{label.patient_exposure}}{{else}}[number]{{/if}} patients exposed worldwide.
+{{/if}}
+
+**Key Points:**
+- {{#if adverse_events}}{{length adverse_events}} adverse event types documented{{else}}Comprehensive adverse event monitoring{{/if}}
+- {{#if label.safety_updates}}{{length label.safety_updates}} safety signals identified{{else}}Ongoing safety surveillance{{/if}}
+- {{#if label.label_changes}}{{length label.label_changes}} label updates{{else}}Regular label review{{/if}}
+- {{#if literature}}{{length literature}} post-marketing studies{{else}}Continued research{{/if}}
+
+The post-marketing experience supports the continued safe use of {{compound_name}} when prescribed according to approved labeling and with appropriate monitoring.
+
+---
+
+## 8.11 Data Sources
+
+This section was compiled from the following sources:
+
+{{#if adverse_events}}
+- **Adverse Events:** FDA FAERS ({{length adverse_events}} events)
+{{/if}}
+{{#if label}}
+- **Label Information:** {{label.source}} ({{label.effective_date}})
+{{/if}}
+{{#if literature}}
+- **Literature:** {{length literature}} post-marketing publications
+{{/if}}
+{{#if eq product_type "generic"}}
+- **RLD Data:** Based on {{rld_brand_name}} post-marketing experience
+{{/if}}
+
+**Confidence Level:** {{#if adverse_events.confidence}}{{capitalize adverse_events.confidence}}{{else}}High{{/if}}
+
+---
+
+*This section complies with ICH E6 (R2) guidelines for Investigator's Brochure content.*

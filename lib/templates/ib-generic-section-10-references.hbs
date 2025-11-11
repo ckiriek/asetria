@@ -1,0 +1,400 @@
+{{!--
+  Investigator's Brochure - Generic Product
+  Section 10: References
+  
+  Template for ICH E6 (R2) compliant IB Section 10
+  
+  Data Sources:
+  - literature (PubMed articles)
+  - trials (ClinicalTrials.gov)
+  - label (regulatory documents)
+  
+  Variables:
+  - compound_name: string
+  - literature: Literature[]
+  - trials: Trial[]
+  - label: Label
+--}}
+
+# 10. REFERENCES
+
+## 10.1 Regulatory Documents
+
+### 10.1.1 FDA Documents
+
+{{#if label}}
+1. **FDA Approved Labeling**
+   - {{label.source}}
+   - Application Number: {{#if label.application_number}}{{label.application_number}}{{else}}[Number]{{/if}}
+   - Effective Date: {{#if label.effective_date}}{{date label.effective_date "YYYY-MM-DD"}}{{else}}[Date]{{/if}}
+   - Available at: {{#if label.source_url}}{{label.source_url}}{{else}}[URL]{{/if}}
+{{else}}
+1. **FDA Approved Labeling**
+   - [Product name] Prescribing Information
+   - Application Number: [NDA/ANDA number]
+   - Effective Date: [Date]
+   - Available at: [URL]
+{{/if}}
+
+{{#if eq product_type "generic"}}
+2. **FDA Orange Book**
+   - Approved Drug Products with Therapeutic Equivalence Evaluations
+   - {{#if rld_brand_name}}Reference Listed Drug: {{rld_brand_name}}{{else}}[RLD]{{/if}}
+   - {{#if rld_application_number}}Application Number: {{rld_application_number}}{{else}}[NDA number]{{/if}}
+   - {{#if te_code}}TE Code: {{te_code}}{{else}}[TE code]{{/if}}
+   - Available at: https://www.accessdata.fda.gov/scripts/cder/ob/
+
+3. **FDA Bioequivalence Guidance**
+   - Guidance for Industry: Bioavailability and Bioequivalence Studies Submitted in NDAs or INDs
+   - U.S. Department of Health and Human Services, Food and Drug Administration
+   - Center for Drug Evaluation and Research (CDER)
+   - Available at: https://www.fda.gov/regulatory-information/search-fda-guidance-documents
+{{/if}}
+
+### 10.1.2 ICH Guidelines
+
+4. **ICH E6 (R2) Good Clinical Practice**
+   - International Council for Harmonisation of Technical Requirements for Pharmaceuticals for Human Use
+   - ICH Harmonised Guideline: Integrated Addendum to ICH E6(R1)
+   - Step 4 version, dated November 9, 2016
+   - Available at: https://www.ich.org/page/efficacy-guidelines
+
+5. **ICH M3(R2) Nonclinical Safety Studies**
+   - International Council for Harmonisation of Technical Requirements for Pharmaceuticals for Human Use
+   - ICH Harmonised Guideline: Guidance on Nonclinical Safety Studies for the Conduct of Human Clinical Trials
+   - Available at: https://www.ich.org/page/multidisciplinary-guidelines
+
+### 10.1.3 Other Regulatory Documents
+
+6. **DailyMed**
+   - National Library of Medicine
+   - {{compound_name}} Product Information
+   - Available at: https://dailymed.nlm.nih.gov/
+
+7. **openFDA**
+   - U.S. Food and Drug Administration
+   - Open Data Portal
+   - Available at: https://open.fda.gov/
+
+---
+
+## 10.2 Chemical and Pharmaceutical References
+
+### 10.2.1 Chemical Databases
+
+8. **PubChem**
+   - National Center for Biotechnology Information
+   - {{compound_name}} Compound Summary
+   - {{#if compound.inchikey}}InChIKey: {{compound.inchikey}}{{else}}[InChIKey]{{/if}}
+   - Available at: https://pubchem.ncbi.nlm.nih.gov/
+
+9. **ChemSpider**
+   - Royal Society of Chemistry
+   - {{compound_name}} Chemical Structure
+   - Available at: http://www.chemspider.com/
+
+### 10.2.2 Pharmaceutical Compendia
+
+10. **United States Pharmacopeia (USP)**
+    - {{compound_name}} Monograph
+    - USP-NF
+    - Available at: https://www.usp.org/
+
+---
+
+## 10.3 Scientific Literature
+
+### 10.3.1 Primary Research Articles
+
+{{#if literature}}
+{{#each literature}}
+{{add @index 11}}. {{#each this.authors}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}. {{this.title}}. *{{this.journal}}*{{#if this.publication_date}}. {{this.publication_date}}{{/if}}{{#if this.volume}};{{this.volume}}{{/if}}{{#if this.issue}}({{this.issue}}){{/if}}{{#if this.pages}}:{{this.pages}}{{/if}}. {{#if this.doi}}doi: {{this.doi}}{{/if}}{{#if this.pmid}} PMID: {{this.pmid}}{{/if}}.
+
+{{/each}}
+{{else}}
+[List primary research articles cited in the IB]
+
+Example format:
+11. Author A, Author B, Author C. Article title. *Journal Name*. Year;Volume(Issue):Pages. doi: DOI. PMID: PMID.
+{{/if}}
+
+### 10.3.2 Review Articles
+
+{{#if literature}}
+{{#each literature}}
+{{#if eq this.publication_type "Review"}}
+{{add @index 100}}. {{#each this.authors}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}. {{this.title}}. *{{this.journal}}*{{#if this.publication_date}}. {{this.publication_date}}{{/if}}{{#if this.volume}};{{this.volume}}{{/if}}{{#if this.issue}}({{this.issue}}){{/if}}{{#if this.pages}}:{{this.pages}}{{/if}}. {{#if this.doi}}doi: {{this.doi}}{{/if}}{{#if this.pmid}} PMID: {{this.pmid}}{{/if}}.
+
+{{/if}}
+{{/each}}
+{{else}}
+[List review articles and meta-analyses]
+{{/if}}
+
+---
+
+## 10.4 Clinical Trial References
+
+### 10.4.1 ClinicalTrials.gov Registry
+
+{{#if trials}}
+**Registered Clinical Trials:**
+
+{{#each trials}}
+{{add @index 200}}. {{this.title}}
+    - ClinicalTrials.gov Identifier: {{this.nct_id}}
+    - Status: {{#if this.status}}{{capitalize this.status}}{{else}}[Status]{{/if}}
+    - Phase: {{#if this.phase}}{{this.phase}}{{else}}[Phase]{{/if}}
+    - Available at: https://clinicaltrials.gov/ct2/show/{{this.nct_id}}
+
+{{/each}}
+{{else}}
+[List relevant clinical trials from ClinicalTrials.gov]
+
+Example format:
+200. Study Title
+     - ClinicalTrials.gov Identifier: NCT########
+     - Status: [Status]
+     - Phase: [Phase]
+     - Available at: https://clinicaltrials.gov/ct2/show/NCT########
+{{/if}}
+
+### 10.4.2 Published Clinical Trial Results
+
+{{#if literature}}
+{{#each literature}}
+{{#if includes this.keywords "clinical trial"}}
+{{add @index 300}}. {{#each this.authors}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}. {{this.title}}. *{{this.journal}}*{{#if this.publication_date}}. {{this.publication_date}}{{/if}}{{#if this.volume}};{{this.volume}}{{/if}}{{#if this.issue}}({{this.issue}}){{/if}}{{#if this.pages}}:{{this.pages}}{{/if}}. {{#if this.doi}}doi: {{this.doi}}{{/if}}{{#if this.pmid}} PMID: {{this.pmid}}{{/if}}.
+
+{{/if}}
+{{/each}}
+{{else}}
+[List published clinical trial results]
+{{/if}}
+
+---
+
+## 10.5 Safety References
+
+### 10.5.1 Adverse Event Databases
+
+400. **FDA Adverse Event Reporting System (FAERS)**
+     - U.S. Food and Drug Administration
+     - {{compound_name}} Adverse Event Reports
+     - Available at: https://www.fda.gov/drugs/surveillance/questions-and-answers-fdas-adverse-event-reporting-system-faers
+
+401. **MedWatch**
+     - FDA Safety Information and Adverse Event Reporting Program
+     - Available at: https://www.fda.gov/safety/medwatch-fda-safety-information-and-adverse-event-reporting-program
+
+### 10.5.2 Safety Publications
+
+{{#if literature}}
+{{#each literature}}
+{{#if includes this.keywords "safety"}}
+{{add @index 500}}. {{#each this.authors}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}. {{this.title}}. *{{this.journal}}*{{#if this.publication_date}}. {{this.publication_date}}{{/if}}{{#if this.volume}};{{this.volume}}{{/if}}{{#if this.issue}}({{this.issue}}){{/if}}{{#if this.pages}}:{{this.pages}}{{/if}}. {{#if this.doi}}doi: {{this.doi}}{{/if}}{{#if this.pmid}} PMID: {{this.pmid}}{{/if}}.
+
+{{/if}}
+{{/each}}
+{{else}}
+[List safety-related publications]
+{{/if}}
+
+---
+
+## 10.6 Pharmacology References
+
+### 10.6.1 Pharmacokinetics
+
+{{#if literature}}
+{{#each literature}}
+{{#if includes this.keywords "pharmacokinetics"}}
+{{add @index 600}}. {{#each this.authors}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}. {{this.title}}. *{{this.journal}}*{{#if this.publication_date}}. {{this.publication_date}}{{/if}}{{#if this.volume}};{{this.volume}}{{/if}}{{#if this.issue}}({{this.issue}}){{/if}}{{#if this.pages}}:{{this.pages}}{{/if}}. {{#if this.doi}}doi: {{this.doi}}{{/if}}{{#if this.pmid}} PMID: {{this.pmid}}{{/if}}.
+
+{{/if}}
+{{/each}}
+{{else}}
+[List pharmacokinetic studies]
+{{/if}}
+
+### 10.6.2 Pharmacodynamics
+
+{{#if literature}}
+{{#each literature}}
+{{#if includes this.keywords "pharmacodynamics"}}
+{{add @index 700}}. {{#each this.authors}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}. {{this.title}}. *{{this.journal}}*{{#if this.publication_date}}. {{this.publication_date}}{{/if}}{{#if this.volume}};{{this.volume}}{{/if}}{{#if this.issue}}({{this.issue}}){{/if}}{{#if this.pages}}:{{this.pages}}{{/if}}. {{#if this.doi}}doi: {{this.doi}}{{/if}}{{#if this.pmid}} PMID: {{this.pmid}}{{/if}}.
+
+{{/if}}
+{{/each}}
+{{else}}
+[List pharmacodynamic studies]
+{{/if}}
+
+### 10.6.3 Drug Interactions
+
+{{#if literature}}
+{{#each literature}}
+{{#if includes this.keywords "drug interaction"}}
+{{add @index 800}}. {{#each this.authors}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}. {{this.title}}. *{{this.journal}}*{{#if this.publication_date}}. {{this.publication_date}}{{/if}}{{#if this.volume}};{{this.volume}}{{/if}}{{#if this.issue}}({{this.issue}}){{/if}}{{#if this.pages}}:{{this.pages}}{{/if}}. {{#if this.doi}}doi: {{this.doi}}{{/if}}{{#if this.pmid}} PMID: {{this.pmid}}{{/if}}.
+
+{{/if}}
+{{/each}}
+{{else}}
+[List drug interaction studies]
+{{/if}}
+
+---
+
+## 10.7 Efficacy References
+
+### 10.7.1 Pivotal Trials
+
+{{#if literature}}
+{{#each literature}}
+{{#if includes this.keywords "efficacy"}}
+{{add @index 900}}. {{#each this.authors}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}. {{this.title}}. *{{this.journal}}*{{#if this.publication_date}}. {{this.publication_date}}{{/if}}{{#if this.volume}};{{this.volume}}{{/if}}{{#if this.issue}}({{this.issue}}){{/if}}{{#if this.pages}}:{{this.pages}}{{/if}}. {{#if this.doi}}doi: {{this.doi}}{{/if}}{{#if this.pmid}} PMID: {{this.pmid}}{{/if}}.
+
+{{/if}}
+{{/each}}
+{{else}}
+[List pivotal efficacy trials]
+{{/if}}
+
+### 10.7.2 Supporting Studies
+
+{{#if literature}}
+{{#each literature}}
+{{#if includes this.keywords "clinical study"}}
+{{add @index 1000}}. {{#each this.authors}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}. {{this.title}}. *{{this.journal}}*{{#if this.publication_date}}. {{this.publication_date}}{{/if}}{{#if this.volume}};{{this.volume}}{{/if}}{{#if this.issue}}({{this.issue}}){{/if}}{{#if this.pages}}:{{this.pages}}{{/if}}. {{#if this.doi}}doi: {{this.doi}}{{/if}}{{#if this.pmid}} PMID: {{this.pmid}}{{/if}}.
+
+{{/if}}
+{{/each}}
+{{else}}
+[List supporting efficacy studies]
+{{/if}}
+
+---
+
+## 10.8 Special Populations
+
+### 10.8.1 Pediatric Studies
+
+{{#if literature}}
+{{#each literature}}
+{{#if includes this.keywords "pediatric"}}
+{{add @index 1100}}. {{#each this.authors}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}. {{this.title}}. *{{this.journal}}*{{#if this.publication_date}}. {{this.publication_date}}{{/if}}{{#if this.volume}};{{this.volume}}{{/if}}{{#if this.issue}}({{this.issue}}){{/if}}{{#if this.pages}}:{{this.pages}}{{/if}}. {{#if this.doi}}doi: {{this.doi}}{{/if}}{{#if this.pmid}} PMID: {{this.pmid}}{{/if}}.
+
+{{/if}}
+{{/each}}
+{{else}}
+[List pediatric studies]
+{{/if}}
+
+### 10.8.2 Geriatric Studies
+
+{{#if literature}}
+{{#each literature}}
+{{#if includes this.keywords "geriatric"}}
+{{add @index 1200}}. {{#each this.authors}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}. {{this.title}}. *{{this.journal}}*{{#if this.publication_date}}. {{this.publication_date}}{{/if}}{{#if this.volume}};{{this.volume}}{{/if}}{{#if this.issue}}({{this.issue}}){{/if}}{{#if this.pages}}:{{this.pages}}{{/if}}. {{#if this.doi}}doi: {{this.doi}}{{/if}}{{#if this.pmid}} PMID: {{this.pmid}}{{/if}}.
+
+{{/if}}
+{{/each}}
+{{else}}
+[List geriatric studies]
+{{/if}}
+
+---
+
+## 10.9 Bioequivalence References
+
+{{#if eq product_type "generic"}}
+### 10.9.1 Bioequivalence Studies
+
+{{#if literature}}
+{{#each literature}}
+{{#if includes this.keywords "bioequivalence"}}
+{{add @index 1300}}. {{#each this.authors}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}. {{this.title}}. *{{this.journal}}*{{#if this.publication_date}}. {{this.publication_date}}{{/if}}{{#if this.volume}};{{this.volume}}{{/if}}{{#if this.issue}}({{this.issue}}){{/if}}{{#if this.pages}}:{{this.pages}}{{/if}}. {{#if this.doi}}doi: {{this.doi}}{{/if}}{{#if this.pmid}} PMID: {{this.pmid}}{{/if}}.
+
+{{/if}}
+{{/each}}
+{{else}}
+[List bioequivalence studies for this generic product]
+{{/if}}
+
+### 10.9.2 FDA Bioequivalence Guidance
+
+1400. **Guidance for Industry: Bioavailability and Bioequivalence Studies Submitted in NDAs or INDs — General Considerations**
+      - U.S. Department of Health and Human Services
+      - Food and Drug Administration
+      - Center for Drug Evaluation and Research (CDER)
+      - March 2014
+      - Available at: https://www.fda.gov/regulatory-information/search-fda-guidance-documents
+{{/if}}
+
+---
+
+## 10.10 Additional Resources
+
+### 10.10.1 Online Databases
+
+1500. **PubMed**
+      - National Library of Medicine
+      - National Center for Biotechnology Information
+      - Available at: https://pubmed.ncbi.nlm.nih.gov/
+
+1501. **ClinicalTrials.gov**
+      - U.S. National Library of Medicine
+      - Clinical Trials Registry
+      - Available at: https://clinicaltrials.gov/
+
+1502. **Drugs@FDA**
+      - U.S. Food and Drug Administration
+      - FDA-Approved Drugs Database
+      - Available at: https://www.accessdata.fda.gov/scripts/cder/daf/
+
+### 10.10.2 Professional Organizations
+
+1503. **American Society of Clinical Pharmacology and Therapeutics (ASCPT)**
+      - Available at: https://www.ascpt.org/
+
+1504. **International Conference on Harmonisation (ICH)**
+      - Available at: https://www.ich.org/
+
+---
+
+## 10.11 Reference Management
+
+**Citation Style:** This Investigator's Brochure uses a numbered citation system consistent with ICH E6 (R2) guidelines.
+
+**Reference Updates:** References are current as of {{date generated_at "YYYY-MM-DD"}}. New references will be added as additional information becomes available.
+
+**Access:** All publicly available references include URLs for easy access. Proprietary or confidential references are available upon request to authorized personnel.
+
+---
+
+## 10.12 Data Sources Summary
+
+This Investigator's Brochure compiled references from the following primary sources:
+
+{{#if literature}}
+- **PubMed Literature:** {{length literature}} articles
+{{/if}}
+{{#if trials}}
+- **ClinicalTrials.gov:** {{length trials}} registered trials
+{{/if}}
+{{#if label}}
+- **FDA Labeling:** {{label.source}}
+{{/if}}
+- **Regulatory Databases:** FDA Orange Book, DailyMed, openFDA
+- **Chemical Databases:** PubChem, ChemSpider
+- **Guidelines:** ICH E6 (R2), ICH M3(R2), FDA Guidance Documents
+
+**Total References:** {{#if literature}}{{add (length literature) 20}}+{{else}}[Number]{{/if}}
+
+---
+
+*This section complies with ICH E6 (R2) guidelines for Investigator's Brochure content.*
+
+*End of References Section*
+
+*End of Investigator's Brochure Document*

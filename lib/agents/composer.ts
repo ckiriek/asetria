@@ -84,9 +84,9 @@ const IB_GENERIC_SECTIONS = {
   'section-5': 'ib-generic-section-5-clinical-pharmacology', // ✅ Complete
   'section-6': 'ib-generic-section-6-safety', // ✅ Complete
   'section-7': 'ib-generic-section-7-efficacy', // ✅ Complete
-  'section-8': 'ib-generic-section-8-marketed-experience', // ⏳ Coming soon
-  'section-9': 'ib-generic-section-9-summary', // ⏳ Coming soon
-  'section-10': 'ib-generic-section-10-references', // ⏳ Coming soon
+  'section-8': 'ib-generic-section-8-marketed-experience', // ✅ Complete
+  'section-9': 'ib-generic-section-9-summary', // ✅ Complete
+  'section-10': 'ib-generic-section-10-references', // ✅ Complete
 }
 
 const IB_INNOVATOR_SECTIONS = {
