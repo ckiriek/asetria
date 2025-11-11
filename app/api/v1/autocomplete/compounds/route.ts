@@ -71,13 +71,29 @@ export async function GET(request: NextRequest) {
       const dailymed = new DailyMedAdapter()
       const dailymedResults = await dailymed.searchByDrugName(query!)
       
-      // DailyMed returns setids, we need to fetch drug names
-      // For now, just add the query as a suggestion if DailyMed has results
-      if (dailymedResults.length > 0 && !results.find(r => r.name.toLowerCase() === query!.toLowerCase())) {
-        results.push({
-          name: query!,
-          source: 'dailymed'
-        })
+      // DailyMed returns setids, fetch titles directly from API
+      for (const setid of dailymedResults.slice(0, 5)) {
+        try {
+          // Fetch SPL data directly to get title
+          const response = await fetch(`https://dailymed.nlm.nih.gov/dailymed/services/v2/spls/${setid}.json`)
+          if (response.ok) {
+            const data = await response.json()
+            if (data.data && data.data.title) {
+              // Extract drug name from title (usually first part before dash or parenthesis)
+              const drugName = data.data.title.split(/[-\(]/)[0].trim()
+              
+              // Only add if not already in results
+              if (!results.find(r => r.name.toLowerCase() === drugName.toLowerCase())) {
+                results.push({
+                  name: drugName,
+                  source: 'dailymed'
+                })
+              }
+            }
+          }
+        } catch (err) {
+          console.error(`Failed to fetch DailyMed SPL ${setid}:`, err)
+        }
       }
     } catch (error) {
       console.error('DailyMed search error:', error)
