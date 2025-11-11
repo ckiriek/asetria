@@ -34,17 +34,17 @@ export default async function DashboardPage() {
     .limit(5)
 
   return (
-    <div className="space-y-8 fade-in">
+    <div className="space-y-4 fade-in">
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-4xl font-semibold tracking-tight">Dashboard</h1>
-          <p className="mt-2 text-muted-foreground">
+          <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             Welcome to Asetria - Clinical Trial Documentation Platform
           </p>
         </div>
         <Link href="/dashboard/projects/new">
-          <Button size="lg" className="gap-2">
+          <Button size="default" className="gap-2">
             <FolderOpen className="h-4 w-4" />
             New Project
           </Button>
@@ -53,8 +53,8 @@ export default async function DashboardPage() {
 
       <Separator />
 
-      {/* Stats Grid - Using New StatsCard Component */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatsCard
           title="Total Projects"
           value={projectCount}
@@ -88,43 +88,41 @@ export default async function DashboardPage() {
       </div>
 
       {/* Recent Projects */}
-      <Card className="hover-lift">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="text-xl">Recent Projects</CardTitle>
-              <CardDescription>Your latest clinical trial projects</CardDescription>
-            </div>
-            <Link href="/dashboard/projects">
-              <Button variant="outline" size="sm">
-                View All
-              </Button>
-            </Link>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between pb-3">
+          <div>
+            <CardTitle className="text-lg">Recent Projects</CardTitle>
+            <CardDescription className="text-sm">Your latest clinical trial projects</CardDescription>
           </div>
+          <Link href="/dashboard/projects">
+            <Button variant="outline" size="sm">
+              View All
+            </Button>
+          </Link>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-0">
           {recentProjects && recentProjects.length > 0 ? (
             <div className="space-y-3">
               {recentProjects.map((project, index) => (
                 <Link
                   key={project.id}
                   href={`/dashboard/projects/${project.id}`}
-                  className="block p-4 border rounded-lg hover:bg-accent hover:border-primary transition-smooth slide-in-from-left"
+                  className="group flex items-center justify-between p-3 rounded-lg border hover:border-primary transition-smooth hover-lift"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3 flex-1">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                      <FolderOpen className="h-5 w-5 text-primary" />
+                    </div>
                     <div className="flex-1">
-                      <div className="flex items-center gap-3">
-                        <h3 className="font-semibold">{project.title}</h3>
-                        <Badge variant="secondary" size="sm">
-                          {project.phase}
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground mt-1">
+                      <h3 className="font-medium text-sm group-hover:text-primary transition-colors">
+                        {project.title}
+                      </h3>
+                      <p className="text-xs text-muted-foreground mt-0.5">
                         {project.indication}
                       </p>
                     </div>
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-xs text-muted-foreground">
                       {new Date(project.created_at).toLocaleDateString()}
                     </div>
                   </div>
@@ -147,17 +145,17 @@ export default async function DashboardPage() {
       </Card>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Link href="/dashboard/projects/new">
           <Card className="hover-lift cursor-pointer">
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
-                  <FolderOpen className="h-6 w-6 text-primary" />
+            <CardContent className="pt-4 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                  <FolderOpen className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold">New Project</h3>
-                  <p className="text-sm text-muted-foreground">Start a new clinical trial</p>
+                  <h3 className="font-medium text-sm">New Project</h3>
+                  <p className="text-xs text-muted-foreground">Start a new clinical trial</p>
                 </div>
               </div>
             </CardContent>
@@ -166,14 +164,14 @@ export default async function DashboardPage() {
 
         <Link href="/dashboard/documents">
           <Card className="hover-lift cursor-pointer">
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-success/10">
-                  <FileText className="h-6 w-6 text-success" />
+            <CardContent className="pt-4 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-success/10">
+                  <FileText className="h-5 w-5 text-success" />
                 </div>
                 <div>
-                  <h3 className="font-semibold">View Documents</h3>
-                  <p className="text-sm text-muted-foreground">Browse all documents</p>
+                  <h3 className="font-medium text-sm">View Documents</h3>
+                  <p className="text-xs text-muted-foreground">Browse all documents</p>
                 </div>
               </div>
             </CardContent>
@@ -182,14 +180,14 @@ export default async function DashboardPage() {
 
         <Link href="/dashboard/projects">
           <Card className="hover-lift cursor-pointer">
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-info/10">
-                  <Activity className="h-6 w-6 text-info" />
+            <CardContent className="pt-4 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-info/10">
+                  <Activity className="h-5 w-5 text-info" />
                 </div>
                 <div>
-                  <h3 className="font-semibold">All Projects</h3>
-                  <p className="text-sm text-muted-foreground">Manage your projects</p>
+                  <h3 className="font-medium text-sm">All Projects</h3>
+                  <p className="text-xs text-muted-foreground">Manage your projects</p>
                 </div>
               </div>
             </CardContent>

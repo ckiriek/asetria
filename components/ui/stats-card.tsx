@@ -25,23 +25,23 @@ export function StatsCard({
 }: StatsCardProps) {
   return (
     <Card className={cn('hover-lift', className)}>
-      <CardContent className="p-6">
-        <div className="flex items-center justify-between mb-4">
-          <p className="text-sm font-medium text-muted-foreground">{title}</p>
+      <CardContent className="p-4">
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-xs font-medium text-muted-foreground">{title}</p>
           {icon && (
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
               {icon}
             </div>
           )}
         </div>
         <div className="space-y-1">
-          <p className="text-3xl font-bold">{value}</p>
+          <p className="text-2xl font-bold">{value}</p>
           {change && (
-            <div className="flex items-center gap-1 text-sm">
+            <div className="flex items-center gap-1 text-xs">
               {change.trend === 'up' ? (
-                <ArrowUp className="h-4 w-4 text-success" />
+                <ArrowUp className="h-3 w-3 text-success" />
               ) : (
-                <ArrowDown className="h-4 w-4 text-error" />
+                <ArrowDown className="h-3 w-3 text-error" />
               )}
               <span
                 className={cn(
@@ -55,7 +55,7 @@ export function StatsCard({
             </div>
           )}
           {description && (
-            <p className="text-sm text-muted-foreground">{description}</p>
+            <p className="text-xs text-muted-foreground">{description}</p>
           )}
         </div>
       </CardContent>
