@@ -1,7 +1,7 @@
 # 🏗️ Asetria Writer - Implementation Roadmap
 
-**Last Updated:** 2025-11-10 22:15 UTC  
-**Status:** Planning Phase  
+**Last Updated:** 2025-11-10 22:40 UTC  
+**Status:** Planning Phase (Updated with Regulatory Data Agent)  
 **Target MVP:** 20 weeks (5 months)
 
 ---
@@ -10,9 +10,9 @@
 
 Asetria Writer transforms from a simple document generator into a **production-grade regulatory document factory** with:
 
-- **Multi-agent architecture** (6 specialized agents)
+- **Multi-agent architecture** (7 specialized agents, including dedicated Regulatory Data Agent)
 - **Dual-mode operation** (Innovator vs Generic)
-- **External data enrichment** (FDA, EMA, PubMed, ClinicalTrials.gov)
+- **External data enrichment** (FDA, EMA, PubMed, ClinicalTrials.gov via Regulatory Data Agent)
 - **Template-driven generation** (ICH/FDA compliant)
 - **Quality validation** (automated compliance checks)
 - **Professional export** (DOCX/PDF with house style)
@@ -36,16 +36,17 @@ User Input → Single LLM → Basic Document → Manual Review
 
 ### Target (To-Be)
 ```
-User Input → Intake Agent → Data Enrichment → Composer → Writer → Validator → Assembler → Export
+User Input → Intake Agent → Regulatory Data Agent → Composer → Writer → Validator → Assembler → Export
 ```
-- ✅ Multi-agent specialized pipeline
+- ✅ Multi-agent specialized pipeline (7 agents)
+- ✅ **Regulatory Data Agent** (dedicated external data enrichment microservice)
 - ✅ Normalized data layer (compounds, products, labels, trials)
 - ✅ Template-driven generation (10-15 sections per doc)
 - ✅ Dual-mode (Innovator/Generic)
-- ✅ External API enrichment (automatic)
+- ✅ External API enrichment (automatic via Regulatory Data Agent)
 - ✅ Quality validation (ICH/FDA checklists)
 - ✅ Professional export (DOCX/PDF)
-- ✅ Audit trail & versioning
+- ✅ Audit trail & versioning with provenance tracking
 
 ---
 
