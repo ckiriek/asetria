@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -12,6 +12,7 @@ import { FieldAutocomplete } from '@/components/forms/field-autocomplete'
 export default function NewProjectPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [suggestedIndications, setSuggestedIndications] = useState<Array<{indication: string, source: string, count?: number}>>([])
   const [formData, setFormData] = useState({
     title: '',
     product_type: 'innovator' as 'innovator' | 'generic' | 'hybrid',
@@ -84,6 +85,34 @@ export default function NewProjectPage() {
       setLoading(false)
     }
   }
+
+  // Auto-fetch indications when compound changes
+  useEffect(() => {
+    const fetchIndications = async () => {
+      if (!formData.compound_name || formData.compound_name.length < 3) {
+        setSuggestedIndications([])
+        return
+      }
+
+      try {
+        console.log('🔍 Fetching indications for:', formData.compound_name)
+        const response = await fetch(`/api/v1/drugs/indications?drug=${encodeURIComponent(formData.compound_name)}`)
+        const data = await response.json()
+
+        if (data.success && data.data) {
+          console.log('✅ Got', data.data.length, 'suggested indications')
+          setSuggestedIndications(data.data)
+        }
+      } catch (error) {
+        console.error('❌ Failed to fetch indications:', error)
+        setSuggestedIndications([])
+      }
+    }
+
+    // Debounce
+    const timer = setTimeout(fetchIndications, 500)
+    return () => clearTimeout(timer)
+  }, [formData.compound_name])
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
@@ -246,6 +275,31 @@ export default function NewProjectPage() {
                 placeholder="e.g., Type 2 Diabetes"
                 required
               />
+              
+              {/* Show suggested indications from selected drug */}
+              {suggestedIndications.length > 0 && !formData.indication && (
+                <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm font-medium text-blue-900 mb-2">
+                    💡 Common indications for {formData.compound_name}:
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {suggestedIndications.slice(0, 5).map((item, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        onClick={() => setFormData({ ...formData, indication: item.indication })}
+                        className="px-3 py-1.5 text-sm bg-white border border-blue-300 rounded-md hover:bg-blue-100 hover:border-blue-400 transition-colors"
+                      >
+                        {item.indication.length > 60 ? item.indication.substring(0, 60) + '...' : item.indication}
+                        {item.count && <span className="ml-1 text-xs text-blue-600">({item.count})</span>}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-xs text-blue-700 mt-2">
+                    Click to select, or type your own indication above
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Drug Class / Active Ingredient */}
