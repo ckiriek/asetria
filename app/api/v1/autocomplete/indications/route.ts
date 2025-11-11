@@ -9,7 +9,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { handleApiError, validateRequiredFields } from '@/lib/middleware/error-handler'
-import { ClinicalTrialsAdapter } from '@/lib/adapters/clinicaltrials'
 
 export async function GET(request: NextRequest) {
   try {
@@ -66,20 +65,41 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Search ClinicalTrials.gov for common indications
-    // Note: For autocomplete, we'll just use the query as a suggestion
-    // since ClinicalTrials.gov API doesn't provide direct condition autocomplete
-    // In a production system, you'd maintain a curated list of common indications
+    // Search ClinicalTrials.gov for real conditions
     try {
-      const ctAdapter = new ClinicalTrialsAdapter()
-      const trials = await ctAdapter.searchTrialsByCondition(query!, 3)
+      // Direct API call to get conditions
+      const ctResponse = await fetch(
+        `https://clinicaltrials.gov/api/v2/studies?query.cond=${encodeURIComponent(query!)}&pageSize=20&fields=ProtocolSection/ConditionsModule/Conditions`
+      )
       
-      // If we found trials, add the query as a valid indication
-      if (trials.length > 0 && !results.find(r => r.indication.toLowerCase() === query!.toLowerCase())) {
-        results.push({
-          indication: query!,
-          source: 'clinicaltrials'
-        })
+      if (ctResponse.ok) {
+        const ctData = await ctResponse.json()
+        const conditionsSet = new Set<string>()
+        
+        // Extract conditions from studies
+        if (ctData.studies && Array.isArray(ctData.studies)) {
+          for (const study of ctData.studies) {
+            const conditions = study.protocolSection?.conditionsModule?.conditions
+            if (conditions && Array.isArray(conditions)) {
+              for (const condition of conditions) {
+                // Only add if it matches the query
+                if (condition.toLowerCase().includes(query!.toLowerCase())) {
+                  conditionsSet.add(condition)
+                }
+              }
+            }
+          }
+        }
+        
+        // Add to results
+        for (const condition of conditionsSet) {
+          if (!results.find(r => r.indication.toLowerCase() === condition.toLowerCase())) {
+            results.push({
+              indication: condition,
+              source: 'clinicaltrials'
+            })
+          }
+        }
       }
     } catch (error) {
       console.error('ClinicalTrials.gov search error:', error)
