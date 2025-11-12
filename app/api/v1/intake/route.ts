@@ -58,16 +58,19 @@ interface IntakeResponse {
 
 export async function POST(request: NextRequest): Promise<NextResponse<IntakeResponse>> {
   try {
+    console.log('🔵 Intake API called')
     const supabase = await createClient()
     
     // 1. Get current user
     const { data: { user }, error: authError } = await supabase.auth.getUser()
     if (authError || !user) {
+      console.error('❌ Auth error:', authError)
       return NextResponse.json(
         { success: false, errors: ['Authentication required'] },
         { status: 401 }
       )
     }
+    console.log('✅ User authenticated:', user.id)
     
     // 2. Get user's org_id
     const { data: userData, error: userError } = await supabase
@@ -77,26 +80,33 @@ export async function POST(request: NextRequest): Promise<NextResponse<IntakeRes
       .single()
     
     if (userError || !userData) {
+      console.error('❌ User lookup error:', userError)
       return NextResponse.json(
         { success: false, errors: ['User not found'] },
         { status: 404 }
       )
     }
+    console.log('✅ User org_id:', userData.org_id)
     
     // 3. Parse request body
     const body: IntakeRequest = await request.json()
+    console.log('📦 Request body:', JSON.stringify(body, null, 2))
     
     // 4. Validate required fields
+    console.log('🔍 Validating project...')
     const validation = validateProjectForEnrichment(body)
     if (!validation.valid) {
+      console.error('❌ Validation failed:', validation.errors)
       return NextResponse.json(
         { success: false, errors: validation.errors },
         { status: 400 }
       )
     }
+    console.log('✅ Validation passed')
     
     // 5. Determine enabled agents
     const enabledAgents = getEnabledAgents(body.product_type)
+    console.log('🤖 Enabled agents:', enabledAgents)
     
     // 6. Prepare project data
     const projectData = {
@@ -123,6 +133,8 @@ export async function POST(request: NextRequest): Promise<NextResponse<IntakeRes
     }
     
     // 7. Create project
+    console.log('💾 Creating project in database...')
+    console.log('📦 Project data:', JSON.stringify(projectData, null, 2))
     const { data: project, error: createError } = await supabase
       .from('projects')
       .insert(projectData)
@@ -130,12 +142,14 @@ export async function POST(request: NextRequest): Promise<NextResponse<IntakeRes
       .single()
     
     if (createError) {
-      console.error('Error creating project:', createError)
+      console.error('❌ Error creating project:', createError)
+      console.error('❌ Error details:', JSON.stringify(createError, null, 2))
       return NextResponse.json(
         { success: false, errors: ['Failed to create project'], message: createError.message },
         { status: 500 }
       )
     }
+    console.log('✅ Project created:', project.id)
     
     // 8. Trigger Regulatory Data Agent (if needed)
     let enrichmentTriggered = false
