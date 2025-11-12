@@ -34,67 +34,9 @@ export async function GET(request: NextRequest) {
       count?: number
     }> = []
 
-    // Search DailyMed for drug labels
-    try {
-      console.log('💊 Searching DailyMed for:', drug)
-      const dailymedResponse = await fetch(
-        `https://dailymed.nlm.nih.gov/dailymed/services/v2/spls.json?drug_name=${encodeURIComponent(drug!)}&pagesize=10`
-      )
-
-      if (dailymedResponse.ok) {
-        const dailymedData = await dailymedResponse.json()
-        console.log('💊 DailyMed found', dailymedData.data?.length || 0, 'labels')
-
-        if (dailymedData.data && Array.isArray(dailymedData.data)) {
-          // Get first SPL for detailed info
-          const firstSetid = dailymedData.data[0]?.setid
-          
-          if (firstSetid) {
-            console.log('💊 Fetching SPL details for setid:', firstSetid)
-            const splResponse = await fetch(
-              `https://dailymed.nlm.nih.gov/dailymed/services/v2/spls/${firstSetid}.json`
-            )
-
-            if (splResponse.ok) {
-              const splData = await splResponse.json()
-              
-              // Find "Indications and Usage" section
-              const indicationsSection = splData.data?.spl_sections?.find(
-                (section: any) => section.section_code === '34067-9' // LOINC code for Indications
-              )
-
-              if (indicationsSection && indicationsSection.section_text) {
-                // Extract text and clean HTML
-                const text = indicationsSection.section_text
-                  .replace(/<[^>]*>/g, ' ') // Remove HTML tags
-                  .replace(/\s+/g, ' ') // Normalize whitespace
-                  .trim()
-
-                // Extract sentences that look like indications
-                // Usually start with drug name or "indicated for"
-                const sentences = text.split(/[.!?]+/).filter((s: string) => s.trim().length > 20)
-                
-                for (const sentence of sentences.slice(0, 3)) {
-                  const cleaned = sentence.trim()
-                  if (cleaned.toLowerCase().includes('indicated') || 
-                      cleaned.toLowerCase().includes('treatment') ||
-                      cleaned.toLowerCase().includes('management')) {
-                    indications.push({
-                      indication: cleaned.substring(0, 200), // Limit length
-                      source: 'dailymed'
-                    })
-                  }
-                }
-
-                console.log('✅ Extracted', indications.length, 'indications from DailyMed')
-              }
-            }
-          }
-        }
-      }
-    } catch (error) {
-      console.error('❌ DailyMed error:', error)
-    }
+    // Skip DailyMed for now - too complex parsing
+    // Focus on ClinicalTrials.gov which has structured data
+    console.log('💊 Skipping DailyMed, using ClinicalTrials.gov only')
 
     // Search ClinicalTrials.gov for common conditions
     try {
