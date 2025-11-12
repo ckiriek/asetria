@@ -11,6 +11,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { handleApiError, validateRequiredFields } from '@/lib/middleware/error-handler'
 import { OrangeBookAdapter } from '@/lib/adapters/orange-book'
 
+export const runtime = 'nodejs'
+export const maxDuration = 30 // 30 seconds for external API calls
+
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams
