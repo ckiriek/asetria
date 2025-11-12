@@ -9,6 +9,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { handleApiError, validateRequiredFields } from '@/lib/middleware/error-handler'
 
+export const runtime = 'nodejs'
+export const maxDuration = 30
+
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams
