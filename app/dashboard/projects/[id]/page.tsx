@@ -1,6 +1,9 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Database } from 'lucide-react'
+import { FetchExternalDataButton } from '@/components/fetch-external-data-button'
 
 export default async function ProjectPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -17,26 +20,51 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
     notFound()
   }
 
-  // Fetch documents count
-  const { count: documentsCount } = await supabase
+  // Fetch documents
+  const { data: documents } = await supabase
     .from('documents')
-    .select('*', { count: 'exact', head: true })
+    .select('*')
     .eq('project_id', id)
+    .order('created_at', { ascending: false })
 
-  // Fetch evidence count
-  const { count: evidenceCount } = await supabase
+  // Fetch evidence sources
+  const { data: evidenceSources } = await supabase
     .from('evidence_sources')
-    .select('*', { count: 'exact', head: true })
+    .select('*')
     .eq('project_id', id)
+    .order('created_at', { ascending: false })
+
+  const hasExternalData = evidenceSources && evidenceSources.length > 0
 
   return (
     <div className="p-8 space-y-6 max-w-7xl mx-auto">
-      <div>
-        <h1 className="text-3xl font-bold mb-2">{project.title}</h1>
-        <p className="text-gray-600">
-          Phase: {project.phase || 'N/A'} • Indication: {project.indication || 'N/A'}
-        </p>
+      {/* Header */}
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">{project.title}</h1>
+          <p className="text-gray-600">
+            Phase: {project.phase || 'N/A'} • Indication: {project.indication || 'N/A'}
+          </p>
+        </div>
+        {!hasExternalData && (
+          <FetchExternalDataButton projectId={project.id} />
+        )}
       </div>
+
+      {/* Alert for no data */}
+      {!hasExternalData && (
+        <div className="p-4 border border-blue-200 bg-blue-50 rounded-lg">
+          <div className="flex items-start gap-3">
+            <Database className="h-5 w-5 text-blue-600 mt-0.5" />
+            <div>
+              <h3 className="font-semibold text-blue-900">Fetch External Data</h3>
+              <p className="text-sm text-blue-700 mt-1">
+                Retrieve evidence from ClinicalTrials.gov, PubMed, and openFDA to enrich your project with safety data and clinical context.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
@@ -67,27 +95,119 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>Documents</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">{documentsCount || 0}</p>
-            <p className="text-sm text-gray-600">Generated documents</p>
-          </CardContent>
-        </Card>
+      {/* Documents */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Documents</CardTitle>
+          <CardDescription>Generated regulatory documents</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {documents && documents.length > 0 ? (
+            <div className="space-y-3">
+              {documents.map((doc) => (
+                <div
+                  key={doc.id}
+                  className="p-4 border rounded-lg hover:bg-gray-50 transition"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-semibold">{doc.type} - Version {doc.version}</p>
+                      <p className="text-sm text-gray-600">
+                        Created {new Date(doc.created_at).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <span className="text-xs px-2 py-1 bg-gray-100 rounded">
+                      {doc.status}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-gray-500 text-center py-8">
+              No documents yet. Fetch external data first, then generate documents.
+            </p>
+          )}
+        </CardContent>
+      </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>External Evidence</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">{evidenceCount || 0}</p>
-            <p className="text-sm text-gray-600">Evidence sources</p>
-          </CardContent>
-        </Card>
-      </div>
+      {/* External Evidence */}
+      <Card>
+        <CardHeader>
+          <CardTitle>External Evidence</CardTitle>
+          <CardDescription>
+            Data from ClinicalTrials.gov, PubMed, and openFDA
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {evidenceSources && evidenceSources.length > 0 ? (
+            <div>
+              <p className="text-sm font-medium mb-4">
+                {evidenceSources.length} evidence sources retrieved
+              </p>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="p-3 border rounded-lg">
+                  <p className="text-xs text-gray-500">Clinical Trials</p>
+                  <p className="text-2xl font-bold">
+                    {evidenceSources.filter(e => e.source === 'ClinicalTrials.gov').length}
+                  </p>
+                </div>
+                <div className="p-3 border rounded-lg">
+                  <p className="text-xs text-gray-500">Publications</p>
+                  <p className="text-2xl font-bold">
+                    {evidenceSources.filter(e => e.source === 'PubMed').length}
+                  </p>
+                </div>
+                <div className="p-3 border rounded-lg">
+                  <p className="text-xs text-gray-500">Safety Reports</p>
+                  <p className="text-2xl font-bold">
+                    {evidenceSources.filter(e => e.source === 'openFDA').length}
+                  </p>
+                </div>
+              </div>
+              
+              {/* Evidence List */}
+              <div className="mt-6 space-y-3">
+                <h4 className="font-semibold text-sm">Recent Evidence</h4>
+                {evidenceSources.slice(0, 5).map((evidence) => (
+                  <div
+                    key={evidence.id}
+                    className="p-3 border rounded-lg hover:bg-gray-50 transition"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded">
+                            {evidence.source}
+                          </span>
+                          {evidence.external_id && (
+                            <span className="text-xs text-gray-500">{evidence.external_id}</span>
+                          )}
+                        </div>
+                        <p className="text-sm font-medium">{evidence.title}</p>
+                        {evidence.snippet && (
+                          <p className="text-xs text-gray-600 mt-1 line-clamp-2">
+                            {evidence.snippet}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                {evidenceSources.length > 5 && (
+                  <p className="text-xs text-gray-500 text-center">
+                    And {evidenceSources.length - 5} more...
+                  </p>
+                )}
+              </div>
+            </div>
+          ) : (
+            <p className="text-sm text-gray-500 text-center py-8">
+              No evidence yet. Click "Fetch External Data" above to retrieve evidence.
+            </p>
+          )}
+        </CardContent>
+      </Card>
     </div>
   )
 }
