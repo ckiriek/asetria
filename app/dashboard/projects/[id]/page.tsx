@@ -5,6 +5,10 @@ export default async function ProjectPageMinimal({ params }: { params: Promise<{
   const { id } = await params
   const supabase = await createClient()
 
+  // Check current user
+  const { data: { user } } = await supabase.auth.getUser()
+  console.log('Current user:', user?.id, user?.email)
+
   // Fetch project
   const { data: project, error } = await supabase
     .from('projects')
@@ -15,6 +19,8 @@ export default async function ProjectPageMinimal({ params }: { params: Promise<{
   if (error || !project) {
     return <div className="p-8">Project not found. Error: {JSON.stringify(error)}</div>
   }
+
+  console.log('Project org_id:', project.org_id)
 
   // Fetch documents
   const { data: documents, error: docsError } = await supabase
