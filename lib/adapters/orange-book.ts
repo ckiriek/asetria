@@ -213,12 +213,17 @@ export class OrangeBookAdapter {
       console.log('🔶 Orange Book search URL:', url)
       const response = await fetch(url)
 
+      console.log('🔶 Orange Book response status:', response.status)
+
       if (!response.ok) {
+        const errorText = await response.text()
+        console.error('🔶 Orange Book error response:', errorText)
+        
         if (response.status === 404) {
           console.warn(`Orange Book: No data found for ${brandName}`)
           return []
         }
-        throw new Error(`Orange Book API error: ${response.status}`)
+        throw new Error(`Orange Book API error: ${response.status} - ${errorText}`)
       }
 
       const data: OrangeBookResponse = await response.json()
