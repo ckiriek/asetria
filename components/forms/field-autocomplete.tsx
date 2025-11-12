@@ -49,7 +49,9 @@ export function FieldAutocomplete({
     }
 
     setLoading(true)
-    const url = `${endpoint}?q=${encodeURIComponent(searchQuery)}&limit=10`
+    // Check if endpoint already has query params
+    const separator = endpoint.includes('?') ? '&' : '?'
+    const url = `${endpoint}${separator}q=${encodeURIComponent(searchQuery)}&limit=10`
     console.log('🔍 Autocomplete search:', { endpoint, query: searchQuery, url })
     
     try {
