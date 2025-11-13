@@ -21,6 +21,18 @@ export default async function EvidencePage({ params }: { params: Promise<{ id: s
 
   const payload = evidence.payload_json as any
 
+  // Generate title from payload
+  const getTitle = () => {
+    if (evidence.source === 'ClinicalTrials.gov') {
+      return payload?.title || evidence.external_id
+    } else if (evidence.source === 'PubMed') {
+      return payload?.title || evidence.external_id
+    } else if (evidence.source === 'openFDA') {
+      return payload?.drugName || evidence.external_id
+    }
+    return evidence.external_id
+  }
+
   // Generate external URL based on source
   const getExternalUrl = () => {
     if (evidence.source === 'ClinicalTrials.gov' && evidence.external_id) {
@@ -31,6 +43,7 @@ export default async function EvidencePage({ params }: { params: Promise<{ id: s
     return null
   }
 
+  const title = getTitle()
   const externalUrl = getExternalUrl()
 
   return (
@@ -53,7 +66,7 @@ export default async function EvidencePage({ params }: { params: Promise<{ id: s
               <span className="text-sm text-gray-600">{evidence.external_id}</span>
             )}
           </div>
-          <h1 className="text-2xl font-bold">{evidence.title}</h1>
+          <h1 className="text-2xl font-bold">{title}</h1>
         </div>
         {externalUrl && (
           <a
@@ -68,17 +81,6 @@ export default async function EvidencePage({ params }: { params: Promise<{ id: s
         )}
       </div>
 
-      {/* Snippet/Summary */}
-      {evidence.snippet && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Summary</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-gray-700">{evidence.snippet}</p>
-          </CardContent>
-        </Card>
-      )}
 
       {/* Clinical Trial Details */}
       {evidence.source === 'ClinicalTrials.gov' && (
@@ -90,43 +92,21 @@ export default async function EvidencePage({ params }: { params: Promise<{ id: s
                   <CardTitle className="text-base">Phase</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm">{payload.phase}</p>
+                  <p className="text-sm">{Array.isArray(payload.phase) ? payload.phase.join(', ') : payload.phase}</p>
                 </CardContent>
               </Card>
             )}
-            {payload?.overall_status && (
+            {payload?.status && (
               <Card>
                 <CardHeader>
                   <CardTitle className="text-base">Status</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm">{payload.overall_status}</p>
+                  <p className="text-sm">{payload.status}</p>
                 </CardContent>
               </Card>
             )}
           </div>
-
-          {payload?.brief_summary && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base">Brief Summary</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-gray-700 whitespace-pre-wrap">{payload.brief_summary}</p>
-              </CardContent>
-            </Card>
-          )}
-
-          {payload?.detailed_description && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base">Detailed Description</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-gray-700 whitespace-pre-wrap">{payload.detailed_description}</p>
-              </CardContent>
-            </Card>
-          )}
 
           <div className="grid grid-cols-2 gap-4">
             {payload?.sponsor && (
@@ -139,28 +119,67 @@ export default async function EvidencePage({ params }: { params: Promise<{ id: s
                 </CardContent>
               </Card>
             )}
-            {payload?.start_date && (
+            {payload?.startDate && (
               <Card>
                 <CardHeader>
                   <CardTitle className="text-base">Start Date</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm">{payload.start_date}</p>
+                  <p className="text-sm">{payload.startDate}</p>
                 </CardContent>
               </Card>
             )}
           </div>
 
-          {payload?.condition && Array.isArray(payload.condition) && (
+          {payload?.completionDate && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Completion Date</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm">{payload.completionDate}</p>
+              </CardContent>
+            </Card>
+          )}
+
+          {payload?.studyType && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Study Type</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm">{payload.studyType}</p>
+              </CardContent>
+            </Card>
+          )}
+
+          {payload?.conditions && Array.isArray(payload.conditions) && (
             <Card>
               <CardHeader>
                 <CardTitle className="text-base">Conditions</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
-                  {payload.condition.map((cond: string, idx: number) => (
-                    <span key={idx} className="text-xs px-2 py-1 bg-gray-100 rounded">
+                  {payload.conditions.map((cond: string, idx: number) => (
+                    <span key={idx} className="text-sm px-3 py-1 bg-blue-100 text-blue-700 rounded">
                       {cond}
+                    </span>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {payload?.interventions && Array.isArray(payload.interventions) && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Interventions</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  {payload.interventions.map((intervention: string, idx: number) => (
+                    <span key={idx} className="text-sm px-3 py-1 bg-green-100 text-green-700 rounded">
+                      {intervention}
                     </span>
                   ))}
                 </div>
@@ -223,71 +242,97 @@ export default async function EvidencePage({ params }: { params: Promise<{ id: s
       {/* Safety Report Details */}
       {evidence.source === 'openFDA' && (
         <>
-          {payload?.openfda && (
+          {payload?.drugName && (
             <Card>
               <CardHeader>
                 <CardTitle className="text-base">Product Information</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2">
-                {payload.openfda.brand_name && (
-                  <div>
-                    <p className="text-xs text-gray-500">Brand Name</p>
-                    <p className="text-sm font-medium">{payload.openfda.brand_name.join(', ')}</p>
-                  </div>
-                )}
-                {payload.openfda.generic_name && (
-                  <div>
-                    <p className="text-xs text-gray-500">Generic Name</p>
-                    <p className="text-sm font-medium">{payload.openfda.generic_name.join(', ')}</p>
-                  </div>
-                )}
-                {payload.openfda.manufacturer_name && (
-                  <div>
-                    <p className="text-xs text-gray-500">Manufacturer</p>
-                    <p className="text-sm">{payload.openfda.manufacturer_name.join(', ')}</p>
-                  </div>
-                )}
+              <CardContent>
+                <div>
+                  <p className="text-xs text-gray-500">Drug Name</p>
+                  <p className="text-sm font-medium">{payload.drugName}</p>
+                </div>
               </CardContent>
             </Card>
           )}
 
-          <div className="grid grid-cols-2 gap-4">
-            {payload?.receivedate && (
+          <div className="grid grid-cols-3 gap-4">
+            {payload?.receiptDate && (
               <Card>
                 <CardHeader>
                   <CardTitle className="text-base">Report Date</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm">{payload.receivedate}</p>
+                  <p className="text-sm">{payload.receiptDate}</p>
                 </CardContent>
               </Card>
             )}
-            {payload?.serious !== undefined && (
+            {payload?.patientAge && (
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-base">Serious Event</CardTitle>
+                  <CardTitle className="text-base">Patient Age</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm">{payload.serious ? 'Yes' : 'No'}</p>
+                  <p className="text-sm">{payload.patientAge}</p>
+                </CardContent>
+              </Card>
+            )}
+            {payload?.patientSex && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">Patient Sex</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm">{payload.patientSex}</p>
                 </CardContent>
               </Card>
             )}
           </div>
 
-          {payload?.patient?.reaction && Array.isArray(payload.patient.reaction) && (
+          {payload?.seriousness && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Seriousness</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm">{payload.seriousness}</p>
+              </CardContent>
+            </Card>
+          )}
+
+          {payload?.reactions && Array.isArray(payload.reactions) && (
             <Card>
               <CardHeader>
                 <CardTitle className="text-base">Reactions</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-2">
-                  {payload.patient.reaction.map((reaction: any, idx: number) => (
-                    <div key={idx} className="p-2 bg-gray-50 rounded">
-                      <p className="text-sm font-medium">{reaction.reactionmeddrapt}</p>
-                      {reaction.reactionoutcome && (
-                        <p className="text-xs text-gray-600">Outcome: {reaction.reactionoutcome}</p>
-                      )}
-                    </div>
+                <div className="flex flex-wrap gap-2">
+                  {payload.reactions.map((reaction: string, idx: number) => (
+                    <span key={idx} className="px-3 py-1 bg-orange-100 text-orange-700 rounded text-sm">
+                      {reaction}
+                    </span>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {payload?.outcomes && Array.isArray(payload.outcomes) && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Outcomes</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  {payload.outcomes.map((outcome: string, idx: number) => (
+                    <span key={idx} className="px-3 py-1 bg-blue-100 text-blue-700 rounded text-sm">
+                      {outcome === '1' ? 'Recovered/Resolved' :
+                       outcome === '2' ? 'Recovering/Resolving' :
+                       outcome === '3' ? 'Not Recovered/Not Resolved' :
+                       outcome === '4' ? 'Recovered/Resolved with Sequelae' :
+                       outcome === '5' ? 'Fatal' :
+                       outcome === '6' ? 'Unknown' : outcome}
+                    </span>
                   ))}
                 </div>
               </CardContent>
