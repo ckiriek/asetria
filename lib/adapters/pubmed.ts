@@ -71,8 +71,8 @@ interface PubMedFetchResponse {
 export class PubMedAdapter {
   private baseUrl = PUBMED_BASE_URL
   private apiKey?: string
-  private email = 'asetria@example.com' // Required by NCBI
-  private tool = 'asetria'
+  private email = 'support@skaldi.com' // Required by NCBI
+  private tool = 'skaldi'
   private lastRequestTime = 0
   private minRequestInterval: number
 

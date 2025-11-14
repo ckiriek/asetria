@@ -64,7 +64,7 @@ export class ExportAgent {
   private outputDir: string
 
   constructor() {
-    this.outputDir = process.env.EXPORT_OUTPUT_DIR || '/tmp/asetria-exports'
+    this.outputDir = process.env.EXPORT_OUTPUT_DIR || '/tmp/skaldi-exports'
   }
 
   /**
@@ -274,7 +274,7 @@ export class ExportAgent {
       ? `<div style="text-align: center; font-size: 10pt; margin-top: 12pt;">
            ${options.page_numbers ? 'Page {page} of {total}' : ''}
            <br/>
-           ${metadata?.author || 'Asetria Writer'} | ${new Date().toISOString().split('T')[0]}
+           ${metadata?.author || 'Skaldi Writer'} | ${new Date().toISOString().split('T')[0]}
          </div>`
       : ''
 

@@ -1,4 +1,4 @@
-# 🚀 Asetria Writer - Pitch Deck
+# 🚀 Skaldi Writer - Pitch Deck
 
 **One-Pager for Investors & First Customers**
 
@@ -18,7 +18,7 @@
 
 ## 💡 The Solution
 
-**Asetria Writer - AI-powered platform for automated regulatory document generation**
+**Skaldi Writer - AI-powered platform for automated regulatory document generation**
 
 ### What We Do:
 - 🤖 **AI generates** professional regulatory documents
@@ -75,7 +75,7 @@
 ### ROI Example
 **Mid-size Pharma (3 trials/year):**
 - Manual: $450k/year (medical writers)
-- Asetria: $60k/year (subscription)
+- Skaldi: $60k/year (subscription)
 - **Savings: $390k/year (87%)**
 
 ---
@@ -205,10 +205,10 @@
 
 ## 📞 Contact
 
-**Website:** asetria.com (coming soon)  
-**Demo:** https://asetria-ckirieks-projects.vercel.app  
-**Email:** contact@asetria.com  
-**LinkedIn:** /company/asetria
+**Website:** https://skaldi.co  
+**Demo:** https://skaldi-ckiriek.vercel.app  
+**Email:** contact@skaldi.com  
+**LinkedIn:** /company/skaldi
 
 ---
 
@@ -228,7 +228,7 @@
 
 ## 🎉 Bottom Line
 
-**Asetria Writer:**
+**Skaldi Writer:**
 - ✅ **Solves real pain** (95% time savings)
 - ✅ **Huge market** ($60B clinical trials)
 - ✅ **Working product** (deployed & tested)

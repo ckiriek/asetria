@@ -285,7 +285,7 @@ export class AssemblerAgent {
 
 ## Document Information
 
-**Prepared by:** Asetria Writer System
+**Prepared by:** Skaldi Writer System
 
 **Prepared for:** Clinical Research
 
@@ -315,7 +315,7 @@ This document contains confidential information. Distribution is restricted to a
 
 **Generated:** ${date}
 
-**System:** Asetria Writer v1.0
+**System:** Skaldi Writer v1.0
 
 **Document Type:** ${request.document_type}
 
@@ -339,46 +339,50 @@ This document contains confidential information. Distribution is restricted to a
 
 ---
 
-*This document was generated using Asetria Writer, an AI-powered regulatory document generation system.*
+*This document was generated using Skaldi Writer, an AI-powered regulatory document generation system.*
 
 *For questions or support, please contact the document administrator.*
 `
-  }
+}
 
-  /**
-   * Get document title
-   */
-  private async getDocumentTitle(request: AssemblerRequest): Promise<string> {
-    // In production, fetch from project
-    const typeTitle = this.formatDocumentType(request.document_type)
-    return `${typeTitle} - [Product Name]`
-  }
+/**
+ * Get document title
+ */
+private async getDocumentTitle(request: AssemblerRequest): Promise<string> {
+  // In production, fetch from project or metadata
+  const typeTitle = this.formatDocumentType(request.document_type)
+  return `${typeTitle} - [Product Name]`
+}
 
-  /**
-   * Format document type
-   */
-  private formatDocumentType(type: string): string {
-    const titles: Record<string, string> = {
-      investigator_brochure: "Investigator's Brochure",
-      clinical_protocol: 'Clinical Trial Protocol',
-      informed_consent: 'Informed Consent Form',
-      study_synopsis: 'Study Synopsis',
-    }
-    return titles[type] || type
+/**
+ * Format document type
+ */
+private formatDocumentType(type: string): string {
+  const titles: Record<string, string> = {
+    investigator_brochure: "Investigator's Brochure",
+    clinical_protocol: 'Clinical Trial Protocol',
+    informed_consent: 'Informed Consent Form',
+    study_synopsis: 'Study Synopsis',
   }
+  return titles[type] || type
+}
 
-  /**
-   * Get document purpose
-   */
-  private getDocumentPurpose(type: string): string {
-    const purposes: Record<string, string> = {
-      investigator_brochure: 'To provide investigators and others involved in the trial with information to facilitate understanding of the rationale for, and compliance with, key features of the protocol.',
-      clinical_protocol: 'To describe the objectives, design, methodology, statistical considerations, and organization of a clinical trial.',
-      informed_consent: 'To provide potential trial subjects with information about the trial to help them decide whether to participate.',
-      study_synopsis: 'To provide a brief summary of the clinical trial design, conduct, and results.',
-    }
-    return purposes[type] || 'Clinical research documentation'
+/**
+ * Get document purpose
+ */
+private getDocumentPurpose(type: string): string {
+  const purposes: Record<string, string> = {
+    investigator_brochure:
+      'To provide investigators and others involved in the trial with information to facilitate understanding of the rationale for, and compliance with, key features of the protocol.',
+    clinical_protocol:
+      'To describe the objectives, design, methodology, statistical considerations, and organization of a clinical trial.',
+    informed_consent:
+      'To provide potential trial subjects with information about the trial to help them decide whether to participate.',
+    study_synopsis:
+      'To provide a brief summary of the clinical trial design, conduct, and results.',
   }
+  return purposes[type] || 'Clinical research documentation'
+}
 
   /**
    * Count words
@@ -390,7 +394,7 @@ This document contains confidential information. Distribution is restricted to a
   /**
    * Get assembly summary
    */
-  getSummary(result: AssemblerResult): {
+  private getSummary(result: AssemblerResult): {
     title: string
     sections: number
     words: number

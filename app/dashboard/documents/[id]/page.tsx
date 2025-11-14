@@ -45,7 +45,7 @@ export default async function DocumentPage({ params }: { params: { id: string } 
   const project = Array.isArray(document.projects) ? document.projects[0] : document.projects
 
   return (
-    <div className="space-y-8 fade-in">
+    <div className="space-y-6">
       {/* Header */}
       <div>
         <Link href={`/dashboard/projects/${(document as any).projects?.id}`}>
@@ -98,7 +98,7 @@ export default async function DocumentPage({ params }: { params: { id: string } 
 
       {/* Document Info */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="hover-lift">
+        <Card>
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">
               <FileText className="h-5 w-5 text-primary" />
@@ -131,7 +131,7 @@ export default async function DocumentPage({ params }: { params: { id: string } 
           </CardContent>
         </Card>
 
-        <Card className="hover-lift">
+        <Card>
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">
               <Info className="h-5 w-5 text-primary" />
@@ -184,10 +184,10 @@ export default async function DocumentPage({ params }: { params: { id: string } 
         />
       ) : (
         <Card>
-          <CardContent className="text-center py-12">
-            <FileText className="mx-auto h-16 w-16 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No content generated yet</h3>
-            <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+          <CardContent className="text-center py-8">
+            <FileText className="mx-auto h-10 w-10 text-muted-foreground mb-3" />
+            <h3 className="text-base font-medium mb-1">No content generated yet</h3>
+            <p className="text-muted-foreground mb-4 max-w-md mx-auto">
               Click 'Generate Document' on the project page to create content using AI.
             </p>
             <Link href={`/dashboard/projects/${(document as any).project_id}`}>
@@ -251,12 +251,11 @@ export default async function DocumentPage({ params }: { params: { id: string } 
                 {(validationResults.results as any[]).map((result: any, index: number) => (
                   <div 
                     key={index} 
-                    className={`p-4 rounded-lg border transition-smooth slide-in-from-left ${
+                    className={`p-4 rounded-lg border transition-smooth ${
                       result.passed 
                         ? 'bg-success/5 border-success/20' 
                         : 'bg-error/5 border-error/20'
                     }`}
-                    style={{ animationDelay: `${index * 50}ms` }}
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1">
@@ -280,9 +279,9 @@ export default async function DocumentPage({ params }: { params: { id: string } 
               </p>
             </div>
           ) : (
-            <div className="text-center py-12">
-              <CheckCircle className="mx-auto h-16 w-16 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No validation results yet</h3>
+            <div className="text-center py-8">
+              <CheckCircle className="mx-auto h-10 w-10 text-muted-foreground mb-3" />
+              <h3 className="text-base font-medium mb-1">No validation results yet</h3>
               <p className="text-muted-foreground">
                 Click 'Validate' to check document compliance with ICH/FDA guidelines
               </p>

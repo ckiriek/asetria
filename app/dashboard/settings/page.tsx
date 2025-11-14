@@ -29,16 +29,14 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="space-y-8 fade-in">
+    <div className="space-y-4">
       {/* Header */}
       <div>
-        <h1 className="text-4xl font-semibold tracking-tight">Settings</h1>
-        <p className="mt-2 text-muted-foreground">
+        <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
           Manage your account settings and preferences
         </p>
       </div>
-
-      <Separator />
 
       {/* Success/Error Messages */}
       {success && (
@@ -56,7 +54,7 @@ export default function SettingsPage() {
       )}
 
       {/* Settings Tabs */}
-      <Tabs defaultValue="profile" className="space-y-6">
+      <Tabs defaultValue="profile" className="space-y-4">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="profile" className="gap-2">
             <User className="h-4 w-4" />
@@ -77,16 +75,16 @@ export default function SettingsPage() {
         </TabsList>
 
         {/* Profile Tab */}
-        <TabsContent value="profile" className="space-y-6">
-          <Card className="hover-lift">
+        <TabsContent value="profile" className="space-y-4">
+          <Card>
             <CardHeader>
               <CardTitle className="text-xl">Profile Information</CardTitle>
               <CardDescription>
                 Update your personal information and email address
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <CardContent className="space-y-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="firstName">First Name</Label>
                   <Input
@@ -138,7 +136,7 @@ export default function SettingsPage() {
               <Separator />
 
               <div className="flex justify-end">
-                <Button onClick={handleSave} disabled={loading} size="lg">
+                <Button onClick={handleSave} disabled={loading}>
                   {loading ? 'Saving...' : 'Save Changes'}
                 </Button>
               </div>
@@ -147,17 +145,17 @@ export default function SettingsPage() {
         </TabsContent>
 
         {/* Notifications Tab */}
-        <TabsContent value="notifications" className="space-y-6">
-          <Card className="hover-lift">
+        <TabsContent value="notifications" className="space-y-4">
+          <Card>
             <CardHeader>
               <CardTitle className="text-xl">Notification Preferences</CardTitle>
               <CardDescription>
                 Manage how you receive notifications
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 border rounded-lg">
+            <CardContent className="space-y-5">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 border rounded-md">
                   <div>
                     <p className="font-medium">Email Notifications</p>
                     <p className="text-sm text-muted-foreground">
@@ -201,7 +199,7 @@ export default function SettingsPage() {
               <Separator />
 
               <div className="flex justify-end">
-                <Button onClick={handleSave} disabled={loading} size="lg">
+                <Button onClick={handleSave} disabled={loading}>
                   {loading ? 'Saving...' : 'Save Preferences'}
                 </Button>
               </div>
@@ -210,8 +208,8 @@ export default function SettingsPage() {
         </TabsContent>
 
         {/* Security Tab */}
-        <TabsContent value="security" className="space-y-6">
-          <Card className="hover-lift">
+        <TabsContent value="security" className="space-y-4">
+          <Card>
             <CardHeader>
               <CardTitle className="text-xl">Security Settings</CardTitle>
               <CardDescription>
@@ -253,9 +251,9 @@ export default function SettingsPage() {
 
               <Separator />
 
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <h3 className="font-semibold">Two-Factor Authentication</h3>
-                <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div className="flex items-center justify-between p-3 border rounded-md bg-muted/40">
                   <div>
                     <p className="font-medium">2FA Status</p>
                     <p className="text-sm text-muted-foreground">
@@ -269,10 +267,10 @@ export default function SettingsPage() {
               <Separator />
 
               <div className="flex justify-end gap-3">
-                <Button variant="outline" size="lg">
+                <Button variant="outline">
                   Enable 2FA
                 </Button>
-                <Button onClick={handleSave} disabled={loading} size="lg">
+                <Button onClick={handleSave} disabled={loading}>
                   {loading ? 'Updating...' : 'Update Password'}
                 </Button>
               </div>
@@ -281,17 +279,17 @@ export default function SettingsPage() {
         </TabsContent>
 
         {/* Data Tab */}
-        <TabsContent value="data" className="space-y-6">
-          <Card className="hover-lift">
+        <TabsContent value="data" className="space-y-4">
+          <Card>
             <CardHeader>
               <CardTitle className="text-xl">Data Management</CardTitle>
               <CardDescription>
                 Export your data or delete your account
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-5">
               <div className="space-y-4">
-                <div className="p-4 border rounded-lg">
+                <div className="p-3 border rounded-md">
                   <h3 className="font-semibold mb-2">Export Your Data</h3>
                   <p className="text-sm text-muted-foreground mb-4">
                     Download a copy of all your projects, documents, and settings
@@ -304,7 +302,7 @@ export default function SettingsPage() {
 
                 <Separator />
 
-                <div className="p-4 border border-error/20 rounded-lg bg-error/5">
+                <div className="p-3 border border-error/20 rounded-md bg-error/5">
                   <h3 className="font-semibold mb-2 text-error">Danger Zone</h3>
                   <p className="text-sm text-muted-foreground mb-4">
                     Permanently delete your account and all associated data. This action cannot be undone.

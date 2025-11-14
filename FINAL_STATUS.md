@@ -1,4 +1,4 @@
-# 🎉 ASETRIA MVP - ФИНАЛЬНЫЙ СТАТУС
+# 🎉 SKALDI MVP - ФИНАЛЬНЫЙ СТАТУС
 
 ## Дата: 10 ноября 2025, 01:46 AM
 
@@ -19,7 +19,7 @@
 - **40+ функций реализовано**
 
 ### 2. ✅ GitHub Синхронизация
-- **Репозиторий**: https://github.com/ckiriek/asetria
+- **Репозиторий**: https://github.com/ckiriek/skaldi
 - **Commit**: Initial MVP Complete
 - **Секреты**: Удалены и заменены на placeholders
 - **Status**: Синхронизирован
@@ -42,7 +42,7 @@
 
 ### Добавь в Vercel Dashboard:
 
-**URL**: https://vercel.com/ckiriek/asetria/settings/environment-variables
+**URL**: https://vercel.com/ckiriek/skaldi/settings/environment-variables
 
 #### 6 переменных:
 
@@ -158,8 +158,8 @@
 ## 🔗 Важные ссылки
 
 ### GitHub
-- **Repo**: https://github.com/ckiriek/asetria
-- **Code**: https://github.com/ckiriek/asetria/tree/main
+- **Repo**: https://github.com/ckiriek/skaldi
+- **Code**: https://github.com/ckiriek/skaldi/tree/main
 
 ### Supabase
 - **Dashboard**: https://supabase.com/dashboard/project/qtlpjxjlwrjindgybsfd
@@ -167,16 +167,16 @@
 - **Storage**: https://supabase.com/dashboard/project/qtlpjxjlwrjindgybsfd/storage/buckets
 
 ### Vercel
-- **Dashboard**: https://vercel.com/ckiriek/asetria
-- **Settings**: https://vercel.com/ckiriek/asetria/settings
-- **Env Vars**: https://vercel.com/ckiriek/asetria/settings/environment-variables
-- **Deployments**: https://vercel.com/ckiriek/asetria/deployments
+- **Dashboard**: https://vercel.com/ckiriek/skaldi
+- **Settings**: https://vercel.com/ckiriek/skaldi/settings
+- **Env Vars**: https://vercel.com/ckiriek/skaldi/settings/environment-variables
+- **Deployments**: https://vercel.com/ckiriek/skaldi/deployments
 
 ---
 
 ## 🎊 CONGRATULATIONS!
 
-### Asetria MVP полностью готов!
+### Skaldi MVP полностью готов!
 
 **Статус**: ✅ Production Ready  
 **GitHub**: ✅ Синхронизирован  

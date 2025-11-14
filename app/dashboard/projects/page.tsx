@@ -2,7 +2,6 @@ import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import Link from 'next/link'
 import { Plus, FolderOpen, FileText, Calendar, MapPin } from 'lucide-react'
 
@@ -23,7 +22,7 @@ export default async function ProjectsPage() {
     .order('created_at', { ascending: false })
 
   return (
-    <div className="space-y-4 fade-in">
+    <div className="space-y-3">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -38,19 +37,17 @@ export default async function ProjectsPage() {
         </Link>
       </div>
 
-      <Separator />
-
       {/* Projects Grid */}
       {projects && projects.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {projects.map((project, index) => (
             <Link 
               key={project.id} 
               href={`/dashboard/projects/${project.id}`}
-              className="hover-lift slide-in-from-bottom"
+              className="block transition-smooth"
               style={{ animationDelay: `${index * 50}ms` }}
             >
-              <Card className="hover-lift cursor-pointer h-full transition-smooth hover:border-primary">
+              <Card className="cursor-pointer h-full transition-smooth hover:bg-gray-50">
                 <CardHeader className="pb-2">
                   <div className="flex items-center justify-between mb-1">
                     <div className="flex items-center gap-2">
@@ -66,7 +63,7 @@ export default async function ProjectsPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="pt-0">
-                  <div className="space-y-2 text-xs">
+                  <div className="space-y-1.5 text-xs">
                     {project.countries && project.countries.length > 0 && (
                       <div className="flex items-start gap-2">
                         <MapPin className="h-3 w-3 text-muted-foreground mt-0.5" />
@@ -82,7 +79,7 @@ export default async function ProjectsPage() {
                         {Array.isArray(project.documents) ? project.documents.length : 0} documents
                       </span>
                     </div>
-                    <div className="flex items-center gap-2 pt-1 border-t">
+                    <div className="flex items-center gap-2 pt-1.5">
                       <Calendar className="h-3 w-3 text-muted-foreground" />
                       <span className="text-muted-foreground">
                         {new Date(project.created_at).toLocaleDateString()}
@@ -95,14 +92,14 @@ export default async function ProjectsPage() {
           ))}
         </div>
       ) : (
-        <div className="text-center py-12">
-          <FolderOpen className="mx-auto h-16 w-16 text-muted-foreground mb-4" />
-          <h3 className="text-lg font-semibold mb-2">No projects yet</h3>
+        <div className="text-center py-8">
+          <FolderOpen className="mx-auto h-10 w-10 text-muted-foreground mb-3" />
+          <h3 className="text-base font-medium mb-1">No projects yet</h3>
           <p className="text-muted-foreground mb-6 max-w-md mx-auto">
             Create your first clinical trial project to start generating regulatory documents
           </p>
           <Link href="/dashboard/projects/new">
-            <Button size="lg">
+            <Button>
               <Plus className="h-4 w-4 mr-2" />
               Create Project
             </Button>

@@ -1,5 +1,5 @@
 /**
- * Template Engine for Asetria Writer
+ * Template Engine for Skaldi Writer
  * 
  * Uses Handlebars for template rendering with custom helpers
  */

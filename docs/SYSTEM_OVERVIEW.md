@@ -1,6 +1,6 @@
-# Asetria Writer - System Overview
+# Skaldi Writer - System Overview
 
-Complete technical documentation for the Asetria Writer platform.
+Complete technical documentation for the Skaldi Writer platform.
 
 **Version:** 1.0.0  
 **Last Updated:** 2025-11-11  
@@ -10,7 +10,7 @@ Complete technical documentation for the Asetria Writer platform.
 
 ## Executive Summary
 
-Asetria Writer is a clinical AI SaaS platform for automated regulatory document generation with full audit trail and compliance tracking.
+Skaldi Writer is a clinical AI SaaS platform for automated regulatory document generation with full audit trail and compliance tracking.
 
 ### Key Features
 

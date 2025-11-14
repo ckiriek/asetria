@@ -1,8 +1,8 @@
-# 🏥 Asetria Writer - AI-Powered Regulatory Documentation Platform
+# 🏥 Skaldi Writer - AI-Powered Regulatory Documentation Platform
 
 **Next-generation platform for automated regulatory document generation**
 
-Asetria Writer - AI-платформа для автоматизации подготовки регуляторной документации с использованием multi-agent architecture и template-based generation.
+Skaldi Writer - AI-платформа для автоматизации подготовки регуляторной документации с использованием multi-agent architecture и template-based generation.
 
 **Миссия**: Сократить цикл подготовки документов с недель до часов при сохранении качества и regulatory compliance.
 
@@ -86,8 +86,8 @@ Asetria Writer - AI-платформа для автоматизации под�
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/asetria.git
-cd asetria
+git clone https://github.com/yourusername/skaldi.git
+cd skaldi
 
 # Install dependencies
 npm install
@@ -190,7 +190,7 @@ npx tsx scripts/test-stages.ts
 ## 📊 Project Structure
 
 ```
-asetria/
+skaldi/
 ├── app/                    # Next.js App Router
 │   ├── dashboard/         # Dashboard pages
 │   ├── api/              # API routes
@@ -236,8 +236,8 @@ Proprietary - All rights reserved
 
 ## 👥 Team
 
-Built with ❤️ by Asetria team
+Built with ❤️ by Skaldi team
 
 ## 📞 Support
 
-For questions and support: support@asetria.com
+For questions and support: support@skaldi.com

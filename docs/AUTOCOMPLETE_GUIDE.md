@@ -1,7 +1,7 @@
 # Autocomplete Guide
 
 ## Overview
-The Asetria platform includes intelligent autocomplete functionality for key form fields, powered by external regulatory databases and internal project data.
+The Skaldi platform includes intelligent autocomplete functionality for key form fields, powered by external regulatory databases and internal project data.
 
 ## Features
 - **Smart Search:** Searches across multiple data sources (PubChem, FDA, ClinicalTrials.gov)

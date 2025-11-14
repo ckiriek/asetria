@@ -1,11 +1,17 @@
-# Asetria Writer - Implementation Plan
+# Skaldi Writer - Implementation Plan
 
-**Last Updated:** 2025-11-12 17:51 UTC  
+**Last Updated:** 2025-11-14 19:53 UTC  
 **Current Phase:** Bug Fixes + Project Page Redesign  
 **Status:** ✅ PROJECT PAGE WORKING — SIMPLIFIED VERSION  
 **Progress:** 100% backend, 100% features, 10% UI/UX improvements  
 **Timeline:** 6 weeks for complete UI/UX overhaul  
 **Achievement:** Fixed persistent "Application error" on project page by simplifying UI components
+**Brand Update (2025-11-14 18:31 UTC):** Project renamed from Asetria Writer to Skaldi Writer; product UI, code, docs, GitHub repo and Vercel project updated. Historical analytical docs keep original Asetria naming.
+**UX Baseline Rules (Stage 1):**
+  - Global Spacing: 16px grid, 8px increments
+  - Headings: Open Sans, font weights 400-700, line heights 1.2-1.5
+  - Cards: 16px padding, 8px radius, 1px border, 16px gutter
+  - Animations: 200ms ease-in-out, 100ms delay
 
 ---
 
@@ -331,6 +337,20 @@ Based on comprehensive MedTech SaaS UI/UX research:
 - **Accessibility:** WCAG AA compliance
 - **Interactions:** Micro-animations, hover states
 - **Layout:** Dashboard-first, responsive
+ 
+### UX Baseline Rules (2025-11-14 19:53 UTC)
+- **Отступы:**
+  - Основные секции: целимся в `space-y-4/6`, избегаем `space-y-8` и `mt-16` по умолчанию.
+  - Крупные вертикальные паддинги (`py-12`) оставляем только для лендинга и очень редких hero‑блоков.
+- **Заголовки:**
+  - Используем `h1/h2/h3` из `globals.css`, не задаём размеры руками (`text-4xl` и т.п.) там, где можно использовать теги.
+  - На странице один `h1`, типично размером `text-3xl` для рабочих экранов дашборда.
+- **Карточки:**
+  - «Тяжёлые» Card (тень, hover‑lift) применяем только к ключевым сущностям: проект, документ.
+  - Вспомогательные блоки (подсказки, инфобоксы, настройки) — плоские карточки без тени, с уменьшенным `p`.
+- **Анимации:**
+  - Эффекты `hover-lift`, `slide-in-*`, `scale-in` используем точечно, только там, где это помогает понять действие.
+  - Для критически важных рабочих экранов (списки, формы) анимации должны быть мягкими и не отвлекать от данных.
 
 ### 6-Week Timeline
 

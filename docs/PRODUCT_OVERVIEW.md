@@ -1,4 +1,4 @@
-# 🏥 Asetria Writer - Product Overview
+# 🏥 Skaldi Writer - Product Overview
 
 **Enterprise-Grade Clinical AI SaaS Platform**
 
@@ -10,7 +10,7 @@
 
 ## 🎯 Executive Summary
 
-Asetria Writer - это **enterprise-grade платформа** для автоматизации создания регуляторной документации в клинических исследованиях. Система использует AI для сокращения времени подготовки документов **с недель до часов** при сохранении полного соответствия ICH/FDA/EMA требованиям.
+Skaldi Writer - это **enterprise-grade платформа** для автоматизации создания регуляторной документации в клинических исследованиях. Система использует AI для сокращения времени подготовки документов **с недель до часов** при сохранении полного соответствия ICH/FDA/EMA требованиям.
 
 ### Ключевые Преимущества
 
@@ -341,8 +341,8 @@ Asetria Writer - это **enterprise-grade платформа** для авто�
 
 ### vs Manual Process
 
-| Feature | Manual | Asetria | Improvement |
-|---------|--------|---------|-------------|
+| Feature | Manual | Skaldi | Improvement |
+|---------|--------|--------|-------------|
 | **IB Creation** | 2-3 weeks | 2-3 hours | **95% faster** |
 | **Data Collection** | 1 week | 10 minutes | **99% faster** |
 | **Version Control** | Email/SharePoint | Built-in | **Seamless** |
@@ -357,19 +357,19 @@ Asetria Writer - это **enterprise-grade платформа** для авто�
 - ❌ No AI generation
 - ❌ Manual document creation
 - ✅ Strong in document management
-- **Asetria advantage:** AI-powered generation
+- **Skaldi advantage:** AI-powered generation
 
 **Wingspan (Certara):**
 - ❌ Template-based only
 - ❌ Limited automation
 - ✅ Good for protocols
-- **Asetria advantage:** Full AI generation
+- **Skaldi advantage:** Full AI generation
 
 **Phlexglobal:**
 - ❌ No AI
 - ❌ Manual writing
 - ✅ Good for submissions
-- **Asetria advantage:** End-to-end automation
+- **Skaldi advantage:** End-to-end automation
 
 ---
 
@@ -447,7 +447,7 @@ Asetria Writer - это **enterprise-grade платформа** для авто�
 - 6 months per trial
 - Total cost: $450k/year
 
-**With Asetria:**
+**With Skaldi:**
 - Subscription: $60k/year
 - 1 month per trial
 - Total cost: $60k/year
@@ -469,7 +469,7 @@ Asetria Writer - это **enterprise-grade платформа** для авто�
 5. Show professional formatting
 6. Export PDF
 
-**Key Message:** "What takes 2 weeks manually, takes 1 hour with Asetria"
+**Key Message:** "What takes 2 weeks manually, takes 1 hour with Skaldi"
 
 ---
 
@@ -596,7 +596,7 @@ Asetria Writer - это **enterprise-grade платформа** для авто�
 
 ## 🎉 Summary
 
-**Asetria Writer - это профессиональный, enterprise-grade продукт, готовый к показу инвесторам и первым клиентам.**
+**Skaldi Writer - это профессиональный, enterprise-grade продукт, готовый к показу инвесторам и первым клиентам.**
 
 ### Что Показывать:
 

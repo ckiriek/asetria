@@ -1,10 +1,10 @@
-# 🚀 Vercel Setup для Asetria
+# 🚀 Vercel Setup для Skaldi
 
 ## ✅ Проект подключен
 
 **Project ID**: `prj_CWUq9EbaRnmcojybijZFUhRqVBdJ`
 
-**GitHub Repo**: https://github.com/ckiriek/asetria
+**GitHub Repo**: https://github.com/ckiriek/skaldi
 
 ---
 
@@ -13,7 +13,7 @@
 Добавь следующие переменные в Vercel Dashboard:
 
 ### 1. Зайди в настройки
-https://vercel.com/ckiriek/asetria/settings/environment-variables
+https://vercel.com/ckiriek/skaldi/settings/environment-variables
 
 ### 2. Добавь переменные
 
@@ -82,11 +82,11 @@ vercel --prod
 
 ## 🔗 Полезные ссылки
 
-- **Dashboard**: https://vercel.com/ckiriek/asetria
-- **Deployments**: https://vercel.com/ckiriek/asetria/deployments
-- **Settings**: https://vercel.com/ckiriek/asetria/settings
-- **Environment Variables**: https://vercel.com/ckiriek/asetria/settings/environment-variables
-- **Domains**: https://vercel.com/ckiriek/asetria/settings/domains
+- **Dashboard**: https://vercel.com/ckiriek/skaldi
+- **Deployments**: https://vercel.com/ckiriek/skaldi/deployments
+- **Settings**: https://vercel.com/ckiriek/skaldi/settings
+- **Environment Variables**: https://vercel.com/ckiriek/skaldi/settings/environment-variables
+- **Domains**: https://vercel.com/ckiriek/skaldi/settings/domains
 
 ---
 
@@ -101,7 +101,7 @@ vercel --prod
 6. ✅ Export DOCX/PDF работает
 
 ### Production URL:
-https://asetria-ckiriek.vercel.app (или твой custom domain)
+https://skaldi-ckiriek.vercel.app (или твой custom domain)
 
 ---
 

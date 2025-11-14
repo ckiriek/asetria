@@ -12,7 +12,7 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'Asetria - Clinical Trial Documentation Platform',
+  title: 'Skaldi - Clinical Trial Documentation Platform',
   description: 'AI-powered platform for automating clinical trial documentation',
 }
 

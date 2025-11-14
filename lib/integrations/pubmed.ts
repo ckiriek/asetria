@@ -16,8 +16,8 @@ export interface Publication {
 
 export class PubMedClient {
   private baseUrl = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils'
-  private email = 'asetria@example.com' // Required by NCBI
-  private tool = 'asetria'
+  private email = 'support@skaldi.com' // Required by NCBI
+  private tool = 'skaldi'
   private apiKey?: string
   private lastRequestTime = 0
   private minRequestInterval = 100 // 100ms = 10 req/sec with API key

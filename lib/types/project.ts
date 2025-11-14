@@ -1,5 +1,5 @@
 /**
- * Project Types for Asetria Writer
+ * Project Types for Skaldi Writer
  * Includes Product Type (Innovator/Generic/Hybrid) and RLD information
  */
 

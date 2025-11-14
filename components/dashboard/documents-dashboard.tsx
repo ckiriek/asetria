@@ -83,7 +83,7 @@ export function DocumentsDashboard({ projectId }: { projectId: string }) {
   }
 
   return (
-    <div className="space-y-8 fade-in">
+    <div className="space-y-6">
       {/* Project Header */}
       {project && (
         <Card>
@@ -99,7 +99,7 @@ export function DocumentsDashboard({ projectId }: { projectId: string }) {
       )}
 
       {/* Documents Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {documentTypes.map((docType, index) => {
           const doc = documents.find((d) => d.type === docType)
           const badge = doc ? getStatusBadge(doc.status) : null
@@ -107,8 +107,7 @@ export function DocumentsDashboard({ projectId }: { projectId: string }) {
           return (
             <Card
               key={docType}
-              className="hover-lift slide-in-from-bottom"
-              style={{ animationDelay: `${index * 50}ms` }}
+              className="hover-lift"
             >
               <CardHeader>
                 <div className="flex items-start justify-between">
@@ -234,13 +233,13 @@ export function DocumentsDashboard({ projectId }: { projectId: string }) {
       </div>
 
       {/* Quick Actions */}
-      <Card className="hover-lift">
+      <Card>
         <CardHeader>
           <CardTitle className="text-xl">Quick Actions</CardTitle>
           <CardDescription>Batch operations and project management</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <Button
               onClick={async () => {
                 try {
@@ -268,14 +267,14 @@ export function DocumentsDashboard({ projectId }: { projectId: string }) {
             </Button>
 
             <Link href={`/projects/${projectId}/evidence`}>
-              <Button variant="outline" size="lg" className="w-full gap-2">
+              <Button variant="outline" className="w-full gap-2">
                 <Database className="h-5 w-5" />
                 View Evidence Locker
               </Button>
             </Link>
 
             <Link href={`/projects/${projectId}/settings`}>
-              <Button variant="outline" size="lg" className="w-full gap-2">
+              <Button variant="outline" className="w-full gap-2">
                 <Settings className="h-5 w-5" />
                 Project Settings
               </Button>

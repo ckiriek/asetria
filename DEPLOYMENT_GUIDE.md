@@ -1,4 +1,4 @@
-# 🚀 Deployment Guide - Asetria на Vercel
+# 🚀 Deployment Guide - Skaldi на Vercel
 
 ## Пошаговая инструкция
 
@@ -51,7 +51,7 @@ git push origin main
 ### 2.2 Import проекта
 
 1. Нажмите **"Add New..."** → **"Project"**
-2. Найдите репозиторий `asetria`
+2. Найдите репозиторий `skaldi`
 3. Нажмите **"Import"**
 
 ### 2.3 Configure Project
@@ -109,7 +109,7 @@ AZURE_OPENAI_DEPLOYMENT_NAME = gpt-4
 
 После успешного deploy:
 - ✅ Build Status: Ready
-- ✅ Deployment URL: `https://asetria-xxx.vercel.app`
+- ✅ Deployment URL: `https://skaldi-xxx.vercel.app`
 - ✅ Production URL: `https://your-domain.com` (если настроен)
 
 ---
@@ -149,7 +149,7 @@ npx supabase secrets set AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4
 
 1. Vercel Project → **Settings** → **Domains**
 2. Нажмите **"Add"**
-3. Введите домен: `asetria.com`
+3. Введите домен: `skaldi.co`
 4. Следуйте инструкциям по настройке DNS
 
 ### 6.2 DNS Records
@@ -275,7 +275,7 @@ Vercel автоматически deploy'ит при push в:
 
 Каждый PR автоматически получает preview URL:
 ```
-https://asetria-git-feature-branch-xxx.vercel.app
+https://skaldi-git-feature-branch-xxx.vercel.app
 ```
 
 ### Rollback
@@ -341,7 +341,7 @@ https://asetria-git-feature-branch-xxx.vercel.app
 
 ## 🎉 Deployment Complete!
 
-Ваш Asetria MVP теперь в production!
+Ваш Skaldi MVP теперь в production!
 
 **Production URL**: https://your-domain.vercel.app
 

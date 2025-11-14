@@ -1,11 +1,9 @@
 import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { FileText, FolderOpen, CheckCircle, Clock, TrendingUp, Activity } from 'lucide-react'
+import { FileText, FolderOpen, CheckCircle, Clock } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { StatsCard } from '@/components/ui/stats-card'
-import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -34,13 +32,13 @@ export default async function DashboardPage() {
     .limit(5)
 
   return (
-    <div className="space-y-4 fade-in">
+    <div className="space-y-3">
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Welcome to Asetria - Clinical Trial Documentation Platform
+            Welcome to Skaldi - Clinical Trial Documentation Platform
           </p>
         </div>
         <Link href="/dashboard/projects/new">
@@ -51,14 +49,11 @@ export default async function DashboardPage() {
         </Link>
       </div>
 
-      <Separator />
-
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatsCard
           title="Total Projects"
           value={projectCount}
-          change={{ value: 12, trend: 'up' }}
           icon={<FolderOpen className="h-5 w-5" />}
           description="Active clinical trials"
         />
@@ -66,7 +61,6 @@ export default async function DashboardPage() {
         <StatsCard
           title="Documents"
           value={documentCount}
-          change={{ value: 8, trend: 'up' }}
           icon={<FileText className="h-5 w-5" />}
           description="Total documents generated"
         />
@@ -81,7 +75,6 @@ export default async function DashboardPage() {
         <StatsCard
           title="Approved"
           value={approvedCount}
-          change={{ value: 15, trend: 'up' }}
           icon={<CheckCircle className="h-5 w-5" />}
           description="Ready for submission"
         />
@@ -107,7 +100,7 @@ export default async function DashboardPage() {
                 <Link
                   key={project.id}
                   href={`/dashboard/projects/${project.id}`}
-                  className="group flex items-center justify-between p-3 rounded-lg border hover:border-primary transition-smooth hover-lift"
+                  className="group flex items-center justify-between rounded-lg border bg-white/50 px-3 py-2 hover:bg-gray-50 transition-smooth"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
                   <div className="flex items-center gap-3 flex-1">
@@ -130,9 +123,9 @@ export default async function DashboardPage() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-12">
-              <FolderOpen className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No projects yet</h3>
+            <div className="text-center py-8">
+              <FolderOpen className="mx-auto h-10 w-10 text-muted-foreground mb-3" />
+              <h3 className="text-base font-medium mb-1">No projects yet</h3>
               <p className="text-muted-foreground mb-6">
                 Get started by creating your first clinical trial project
               </p>
@@ -143,58 +136,6 @@ export default async function DashboardPage() {
           )}
         </CardContent>
       </Card>
-
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Link href="/dashboard/projects/new">
-          <Card className="hover-lift cursor-pointer">
-            <CardContent className="pt-4 pb-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                  <FolderOpen className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-medium text-sm">New Project</h3>
-                  <p className="text-xs text-muted-foreground">Start a new clinical trial</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </Link>
-
-        {/* Temporarily disabled - page not yet implemented */}
-        {/* <Link href="/dashboard/documents">
-          <Card className="hover-lift cursor-pointer">
-            <CardContent className="pt-4 pb-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-success/10">
-                  <FileText className="h-5 w-5 text-success" />
-                </div>
-                <div>
-                  <h3 className="font-medium text-sm">View Documents</h3>
-                  <p className="text-xs text-muted-foreground">Browse all documents</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </Link> */}
-
-        <Link href="/dashboard/projects">
-          <Card className="hover-lift cursor-pointer">
-            <CardContent className="pt-4 pb-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-info/10">
-                  <Activity className="h-5 w-5 text-info" />
-                </div>
-                <div>
-                  <h3 className="font-medium text-sm">All Projects</h3>
-                  <p className="text-xs text-muted-foreground">Manage your projects</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </Link>
-      </div>
     </div>
   )
 }

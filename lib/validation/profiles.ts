@@ -133,7 +133,7 @@ export const IB_PROFILE: ValidationProfile = {
   metadata: {
     regulatory_standard: 'ICH E6(R2)',
     last_updated: '2025-11-11',
-    author: 'Asetria Validation Team',
+    author: 'Skaldi Validation Team',
   },
 }
 
@@ -197,7 +197,7 @@ export const PROTOCOL_PROFILE: ValidationProfile = {
   metadata: {
     regulatory_standard: 'ICH E6(R2) Section 6',
     last_updated: '2025-11-11',
-    author: 'Asetria Validation Team',
+    author: 'Skaldi Validation Team',
   },
 }
 
@@ -261,7 +261,7 @@ export const CSR_PROFILE: ValidationProfile = {
   metadata: {
     regulatory_standard: 'ICH E3',
     last_updated: '2025-11-11',
-    author: 'Asetria Validation Team',
+    author: 'Skaldi Validation Team',
   },
 }
 

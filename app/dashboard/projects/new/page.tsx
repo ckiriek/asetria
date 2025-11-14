@@ -113,23 +113,23 @@ export default function NewProjectPage() {
   }, [formData.compound_name])
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="max-w-3xl mx-auto space-y-4">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">New Project</h1>
-        <p className="mt-2 text-gray-600">Create a new clinical trial project</p>
+        <h1 className="text-2xl font-semibold tracking-tight">New Project</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Create a new clinical trial project</p>
       </div>
 
       <form onSubmit={handleSubmit}>
         <Card>
-          <CardHeader>
+          <CardHeader className="pb-4">
             <CardTitle>Project Details</CardTitle>
             <CardDescription>
               Enter the basic information about your clinical trial
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-5 pt-0">
             {/* Product Type Selection */}
-            <div className="space-y-4 pb-6 border-b">
+            <div className="space-y-3">
               <div>
                 <Label className="text-base font-semibold">Product Type *</Label>
                 <p className="text-sm text-gray-500 mt-1">Select the type of product for this project</p>
@@ -140,7 +140,7 @@ export default function NewProjectPage() {
                   setFormData({ ...formData, product_type: value })
                 }
               >
-                <div className="flex items-start space-x-3 p-4 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                <div className="flex items-start space-x-3 p-3 border rounded-md hover:bg-gray-50 cursor-pointer">
                   <RadioGroupItem value="innovator" id="innovator" className="mt-1" />
                   <div className="flex-1">
                     <Label htmlFor="innovator" className="cursor-pointer">
@@ -151,7 +151,7 @@ export default function NewProjectPage() {
                     </Label>
                   </div>
                 </div>
-                <div className="flex items-start space-x-3 p-4 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                <div className="flex items-start space-x-3 p-3 border rounded-md hover:bg-gray-50 cursor-pointer">
                   <RadioGroupItem value="generic" id="generic" className="mt-1" />
                   <div className="flex-1">
                     <Label htmlFor="generic" className="cursor-pointer">
@@ -162,7 +162,7 @@ export default function NewProjectPage() {
                     </Label>
                   </div>
                 </div>
-                <div className="flex items-start space-x-3 p-4 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                <div className="flex items-start space-x-3 p-3 border rounded-md hover:bg-gray-50 cursor-pointer">
                   <RadioGroupItem value="hybrid" id="hybrid" className="mt-1" />
                   <div className="flex-1">
                     <Label htmlFor="hybrid" className="cursor-pointer">
@@ -210,14 +210,14 @@ export default function NewProjectPage() {
 
             {/* Generic-specific: RLD Information */}
             {formData.product_type === 'generic' && (
-              <Card className="bg-blue-50 border-blue-200">
+              <Card className="bg-blue-50/60 border-blue-200">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base">Reference Listed Drug (RLD) Information</CardTitle>
                   <CardDescription>
                     We'll automatically fetch nonclinical and clinical data from FDA/EMA databases
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-3">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       RLD Brand Name *
@@ -233,12 +233,10 @@ export default function NewProjectPage() {
                       We'll automatically fetch Application Number and TE Code from FDA Orange Book
                     </p>
                   </div>
-                  <div className="bg-white border border-blue-300 rounded-md p-3">
-                    <p className="text-sm text-blue-900">
-                      <strong>🤖 Auto-enrichment enabled:</strong> We'll fetch pharmacology, PK/PD, safety data, 
-                      and references from FDA labels, EMA EPAR, and PubMed.
-                    </p>
-                  </div>
+                  <p className="text-xs text-blue-800">
+                    🤖 Auto-enrichment enabled: We'll fetch pharmacology, PK/PD, safety data, and references from FDA labels,
+                    EMA EPAR, and PubMed.
+                  </p>
                 </CardContent>
               </Card>
             )}
@@ -276,7 +274,7 @@ export default function NewProjectPage() {
               
               {/* Show suggested indications from selected drug */}
               {suggestedIndications.length > 0 && !formData.indication && (
-                <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="mt-3 p-2.5 bg-blue-50/60 border border-blue-100 rounded-lg">
                   <p className="text-sm font-medium text-blue-900 mb-2">
                     💡 Common indications for {formData.compound_name}:
                   </p>
@@ -318,10 +316,10 @@ export default function NewProjectPage() {
             </div>
 
             {/* Study Design */}
-            <div className="border-t pt-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Study Design</h3>
+            <div className="pt-4">
+              <h3 className="text-base font-medium text-gray-900 mb-3">Study Design</h3>
               
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Design Type
@@ -377,7 +375,7 @@ export default function NewProjectPage() {
                 </div>
               </div>
 
-              <div className="mt-4">
+              <div className="mt-3">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Primary Endpoint
                 </label>
@@ -393,7 +391,7 @@ export default function NewProjectPage() {
             </div>
 
             {/* Actions */}
-            <div className="flex justify-end space-x-4 pt-6 border-t">
+            <div className="flex justify-end space-x-3 pt-4 border-t">
               <Button
                 type="button"
                 variant="outline"
